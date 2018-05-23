@@ -1,0 +1,141 @@
+html{
+    margin-right: 15%;
+    margin-left: 15%;    
+}
+
+body{
+    background-image: url("images/5394598-wallpaper.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    margin-top: 100px;
+    margin-bottom: 40px;
+}
+
+footer{
+    color: aliceblue;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    position: fixed;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    bottom: 0px;
+    overflow: hidden;
+    width: 70%;
+    padding: 2px;
+}
+
+.content{
+    background-color: rgba(3, 3, 3, 0.8);
+    color: wheat;
+    padding-left: 2.5%;
+    padding-right: 2.5%;
+    overflow: hidden;
+    max-width: 100%;
+
+}
+/* navigation bar styling */
+.topnav{
+    background-color: rgba(3, 3, 3, 0.8);
+    overflow: hidden;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    position: fixed; /* Set the navbar to fixed position */
+    top: 0; /* Position the navbar at the top of the page */
+    width: 70%; /* 70% of Full width */
+}
+#left{
+    float: left;
+    /* margin-left: 5%; */
+}
+#right{
+    float: right;
+    margin-right: 30px;
+}
+
+.topnav a{
+    display: inline-block;
+    color: whitesmoke;
+    text-align: center;
+    padding: 14px;
+    text-decoration: none;
+    font-size: 1.25em;
+    border: 1px solid white;
+    
+}
+
+/* @media screen and (max-width:600px){
+    .topnav #right,
+    .topnav {float: none;}
+} */
+
+/* mouse over link */
+.topnav a:hover {
+    color: black;
+    background-color: tomato;
+    text-decoration: none;
+}
+
+/* selected link */
+.topnav a.active {
+    color: green;
+}
+/* end navigation bar styling */
+/* slideshow class */
+.slideshow{
+    position: relative;
+}
+/* slide class */
+.slide{
+    color: white;
+    font-size: 2em;
+    display: none;
+    text-align: center;
+    padding: 20%;
+}
+/* previous and next buttons */
+.next, .prev{
+    position: absolute;
+    top: 50%;
+    cursor: pointer;
+    width: auto;
+    margin-top: -30px;
+    color: white;
+    border-radius: 0 3px 3px 0;
+}
+/* position next arrow to the right */
+.next{
+    right: 0;
+}
+/* change arrow background color on hover */
+.next:hover, .prev:hover{
+    color: tomato;
+}
+/* format the dot indicators contaner */
+.indicators{
+    text-align: center;
+}
+/* format the dots */
+.dot{
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: beige;
+    display: inline-block;
+    border-radius: 50%;
+    transition: background-color 0.6s ease;
+}
+/* add styling for hover events on dots */
+.active, .dot:hover {
+    background-color: tomato;
+}
+
+/* welcome text styling */
+.welcome{
+    font-style: oblique;
+    font-family: fantasy;
+    font-size: 3em;
+    text-align: center;
+    color: white;
+}
+
