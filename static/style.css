@@ -87,7 +87,7 @@ footer{
 }
 /* slide class */
 .slide{
-    color: white;
+    color: tomato;
     font-size: 2em;
     display: none;
     text-align: center;
