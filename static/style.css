@@ -209,10 +209,6 @@ footer{
     background-color: tomato;
 }
 
-
-
-=======
-
 /* full width for input fields */
 input[type=text], input[type=email], input[type=password]{
     padding: 0.5rem;
