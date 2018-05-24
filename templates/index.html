@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Maintenance Tracker</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+<body>
+    <div class="topnav" id="topnav">
+        <a href="index.html">Maintenance Tracker</a>
+            
+        <div class="right">
+            <a href="signup.html">Sign Up</a>
+            <a href="signin.html">Login</a>
+        </div>
+        <a href="javascript:void(0);" class="nav-icon" onclick="toggleNavbar()">
+            <i class="fa fa-bars"></i>
+        </a>
+    </div>
+    <div class="content">
+        <p class="welcome"> Welcome to the Maintenance Tracker app</p>
+    </div>
+    <hr>
+    <!-- Slideshow -->
+    <div class="content">
+        <div class="slideshow">
+            <!-- Full-width quotes -->
+            <div class="slide">
+                <p>Have a maintenance request you want taken care of, this is the place to get sorted out? </p>            
+            </div>
+            <div class="slide">
+                <p>Sign in or sign up to make a maintenance request to the admin today.</p>            
+            </div>
+            <div class="slide">
+                <p>All maintenance requests are taken care of immediately? </p>            
+            </div>
+             <!-- Next and previous buttons -->
+            <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
+            <a class="next" onclick="changeSlide(1)">&#10095;</a>
+        </div>
+        <!-- Dot indicators -->
+        <div class="indicators">
+            <span class="dot" onclick="currentSlide(1)"></span> 
+            <span class="dot" onclick="currentSlide(2)"></span> 
+            <span class="dot" onclick="currentSlide(3)"></span> 
+        </div>
+    </div>
+    <footer class="footer">
+        <p>Maintenance Tracker © 2018 John Musiu</p>
+    </footer>
+    
+    <script src="../static/script.js"></script>
+
+</body>
+</html>
