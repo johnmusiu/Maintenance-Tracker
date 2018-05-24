@@ -27,7 +27,6 @@ function showSlide(x){
     dots[index-1].className += " active";
 }
 
-showSlide(1); 
 
 // toggle navbar for small screen devices by adding responsive class to navbar
 
@@ -39,3 +38,22 @@ function toggleNavbar(){
         navbar.classList.remove("responsive")
     }
 }
+
+function toggleRequestForm(){
+    const requestLink = document.getElementById("request-form");
+    const requestDiv = document.getElementById("add-request");
+
+    if(requestDiv.classList.contains('show-form')){
+        requestDiv.classList.remove("show-form");
+        requestDiv.classList.add("hide-form");
+        requestLink.style.color = "white";
+        requestLink.innerHTML = "Make Request";
+
+    }else{
+        requestLink.innerHTML = "Hide Request Form";
+        requestDiv.classList.remove("hide-form");        
+        requestDiv.classList.add("show-form");
+    }    
+}
+
+showSlide(1); 

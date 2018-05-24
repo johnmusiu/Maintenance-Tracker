@@ -210,7 +210,7 @@ footer{
 }
 
 /* full width for input fields */
-input[type=text], input[type=email], input[type=password]{
+input[type=text], input[type=email], input[type=password], textarea{
     padding: 0.5rem;
     width: 60%;
     margin: 5px 0 22px 20%;
@@ -235,7 +235,7 @@ label, .btn-signup, form p{
 /* Change styles on small screens */
 @media screen and (max-width: 600px) {
     label, .btn-signup, form p,
-    input[type=text], input[type=email], input[type=password]{
+    input[type=text], input[type=email], input[type=password], textarea{
         margin-left: 2px;
         width: 85%
     }
@@ -289,3 +289,30 @@ tr:nth-child(even){
 tbody tr:hover{
     background-color: tomato;
 }
+/* end tables design styles */
+
+/* request form styles in home-user */
+.hide-form{
+    display: none;
+}
+
+#add-request h3{
+    text-align: center;
+}
+
+.btn-jump-to{
+    color: white;
+}
+
+.show-form{
+    display: block;
+}
+
+#add-request{
+    margin-bottom: 2em;
+}
+
+div form{
+    background-color:  rgba(0, 0, 0, 0.8);
+}
+/* end request form styles in home-user */

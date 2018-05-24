@@ -12,7 +12,7 @@
     <div class="topnav" id="topnav">
         <a href="index.html">Maintenance Tracker</a>
         <a class="active" href="home-user.html">Home</a>
-        <a href="">Make Request</a>
+        <a id="request-form" href="javascript:void(0);" onclick="toggleRequestForm()">Make Request</a>
             
         <div class="right">
             <a href=""><i class="fa fa-sign-out" aria-hidden="true"></i></a>
@@ -23,6 +23,24 @@
     </div>
     <div class="content">
         <p class="welcome"> Welcome to your dashboard </p>
+        <div class="hide-form" id="add-request">
+            <form action="" method="post">
+                <h3>Create new maintenance request</h3>
+                <!-- first name -->
+                <label for="title"><b>Title</b></label> <br>
+                <input type="text" name="title" id="title" placeholder="Enter request title" required>    
+                
+                <!-- last name -->
+                <label for="description"><b>Description</b></label>
+                <textarea type="text" name="description" id="description" placeholder="Enter a description" required>
+                </textarea>
+
+                <!-- submit -->
+                <button type="submit" class="btn-signup">Submit Request</button>
+                <br>
+            </form>
+            <hr>
+        </div>
         <div class="table">
             <table>
                 <caption>Your historical maintenance requests</caption>
@@ -67,10 +85,10 @@
                         <td></td>
                         <!-- <td></td> -->
                     </tr>
-                    
                 </tbody>
             </table>
             <br>
+            <a class="btn-jump-to" href="#add-request" onclick="toggleRequestForm()">Create a Maintenance Request </a>   
         </div>
     </div>
     
