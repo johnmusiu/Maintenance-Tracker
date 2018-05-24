@@ -117,7 +117,7 @@ footer{
 }
 /* make navbar responsive */
 @media screen and (max-width: 600px){
-    .topnav a:not(:first-child), .right a.active {display: none;}
+    .topnav a:not(:first-child), .right a.active, div.right a {display: none;}
     .topnav a.nav-icon{
         display: block;
         float: right;
