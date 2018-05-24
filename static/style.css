@@ -31,7 +31,7 @@ footer{
     padding-left: 2.5%;
     padding-right: 2.5%;
     overflow: hidden;
-    width: 96%;
+    max-width: 96%;
 
 }
 /* navigation bar styling */
@@ -61,10 +61,15 @@ footer{
     border: 1px solid white;
     
 }
+
+/* welcome text styling */
 .welcome{
-    text-align: center;
+    font-style: oblique;
+    font-family: fantasy;
     font-size: 2.5em;
+    text-align: center;
 }
+
 @media screen and (max-width:600px){
     .topnav{
         width: 93%;
@@ -102,6 +107,7 @@ footer{
     background-color: tomato;
     text-decoration: none;
 }
+
 /* end navigation bar styling */
 
 /* form signup and signin styling */
@@ -111,13 +117,15 @@ footer{
     margin: 2% 0 3% 0;
     
 }
+
 /* navbar-icon (bars horizontal icon) hidden by default on large screens */
 .topnav .nav-icon{
     display: none;
 }
 /* make navbar responsive */
 @media screen and (max-width: 600px){
-    .topnav a:not(:first-child), .right a.active, div.right a {display: none;}
+    .topnav a:not(:first-child), .right,.right a.active, div.right a {display: none;}
+
     .topnav a.nav-icon{
         display: block;
         float: right;
@@ -137,12 +145,73 @@ footer{
         display: block;
         text-align: left;
     }
-    div.topnav.responsive div.right{
+    .topnav.responsive div.right{display: block;}
+    div.topnav.responsive .right{
         float: right;
         margin-right: 0;
         width: 100%;
     }  
 }
+/* end navigation bar styling */
+  
+/* slideshow class */
+.slideshow{
+    position: relative;
+}
+/* slide class */
+.slide{
+    color: tomato;
+    font-size: 2em;
+    display: none;
+    text-align: center;
+    padding: 20%;
+}
+@media screen and (max-width:600px){
+    .slide{
+        font-size: 1em;
+        padding: 10%
+    }
+}
+/* previous and next buttons */
+.next, .prev{
+    position: absolute;
+    top: 50%;
+    cursor: pointer;
+    width: auto;
+    margin-top: -30px;
+    color: white;
+    border-radius: 0 3px 3px 0;
+}
+/* position next arrow to the right */
+.next{
+    right: 0;
+}
+/* change arrow background color on hover */
+.next:hover, .prev:hover{
+    color: tomato;
+}
+/* format the dot indicators contaner */
+.indicators{
+    text-align: center;
+}
+/* format the dots */
+.dot{
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: beige;
+    display: inline-block;
+    border-radius: 50%;
+    transition: background-color 0.6s ease;
+}
+/* add styling for hover events on dots */
+.active, .dot:hover {
+    background-color: tomato;
+}
+
+
+
+=======
 
 /* full width for input fields */
 input[type=text], input[type=email], input[type=password]{
