@@ -108,13 +108,24 @@ footer{
     text-decoration: none;
 }
 
+/* end navigation bar styling */
+
+/* form signup and signin styling */
+.signup, .signin{
+    border: none;
+    color: whitesmoke;
+    margin: 2% 0 3% 0;
+    
+}
+
 /* navbar-icon (bars horizontal icon) hidden by default on large screens */
 .topnav .nav-icon{
     display: none;
 }
 /* make navbar responsive */
 @media screen and (max-width: 600px){
-    .topnav a:not(:first-child), .right {display: none;}
+    .topnav a:not(:first-child), .right,.right a.active {display: none;}
+
     .topnav a.nav-icon{
         display: block;
         float: right;
@@ -142,6 +153,7 @@ footer{
     }
 }
 /* end navigation bar styling */
+  
 /* slideshow class */
 .slideshow{
     position: relative;
@@ -198,4 +210,48 @@ footer{
 }
 
 
+
+=======
+
+/* full width for input fields */
+input[type=text], input[type=email], input[type=password]{
+    padding: 0.5rem;
+    width: 60%;
+    margin: 5px 0 22px 20%;
+    /* display: block; */
+    /* border: none; */
+}
+
+label, .btn-signup, form p{
+    margin-left: 20%;
+}
+
+.btn-signup{
+    color: white;
+    background-color: #4CAF50; 
+    border-radius: 5px;
+    padding: 0.5rem;
+    margin-left: 20%;
+    width: 20%;
+    display: block;
+}
+
+/* Change styles on small screens */
+@media screen and (max-width: 600px) {
+    label, .btn-signup, form p,
+    input[type=text], input[type=email], input[type=password]{
+        margin-left: 2px;
+        width: 85%
+    }
+    .signup, .signin{
+        margin-left: 1%;
+        margin-right: 1%;
+        margin-bottom: 10px;
+    }
+    
+  }
+
+
+
+/* end form signup and signin styling */
 

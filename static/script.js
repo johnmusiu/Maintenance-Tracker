@@ -30,6 +30,7 @@ function showSlide(x){
 showSlide(1); 
 
 // toggle navbar for small screen devices by adding responsive class to navbar
+
 function toggleNavbar(){
     const navbar = document.getElementById("topnav");
     if(navbar.className === "topnav"){
