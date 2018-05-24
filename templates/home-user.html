@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Maintenance Tracker</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div class="topnav" id="topnav">
+        <a href="index.html">Maintenance Tracker</a>
+        <a class="active" href="home-user.html">Home</a>
+        <a href="">Make Request</a>
+            
+        <div class="right">
+            <a href=""><i class="fa fa-sign-out" aria-hidden="true"></i></a>
+        </div>
+        <a href="javascript:void(0);" class="nav-icon" onclick="toggleNavbar()">
+            <i class="fa fa-bars"></i>
+        </a>
+    </div>
+    <div class="content">
+        <p class="welcome"> Welcome to your dashboard </p>
+        <div class="table">
+            <table>
+                <caption>Your historical maintenance requests</caption>
+                <thead>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Date Requested</th>
+                    <th>Approved</th>
+                    <th>Status</th>
+                    <!-- <th>Admin Comments</th> -->
+                    <th>Actions</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>10</td>
+                        <td>Network Connectivity Issues</td>
+                        <td>I am unable to connect to the wifi network.</td>
+                        <td>12:09pm 12-05-2018</td>
+                        <td>Approved</td>
+                        <td>Solved</td>
+                        <!-- <td></td> -->
+                        <td>More</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>Mouse not working</td>
+                        <td>Lab 2 computer id 12 mouse broken</td>
+                        <td>08:23am 03-05-2018</td>
+                        <td>Approved</td>
+                        <td>Solved</td>
+                        <!-- <td></td> -->
+                        <td>delete</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Replace keyboards</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <!-- <td></td> -->
+                    </tr>
+                    
+                </tbody>
+            </table>
+            <br>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <p>Maintenance Tracker © 2018 John Musiu</p>
+    </footer>
+    
+    <script src="../static/script.js"></script>
+
+</body>
+</html>
