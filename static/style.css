@@ -117,7 +117,7 @@ footer{
 }
 /* make navbar responsive */
 @media screen and (max-width: 600px){
-    .topnav a:not(:first-child), .right a.active {display: none;}
+    .topnav a:not(:first-child), .right a.active, div.right a {display: none;}
     .topnav a.nav-icon{
         display: block;
         float: right;
@@ -141,7 +141,7 @@ footer{
         float: right;
         margin-right: 0;
         width: 100%;
-    }
+    }  
 }
 
 /* full width for input fields */
@@ -185,3 +185,42 @@ label, .btn-signup, form p{
 
 
 /* end form signup and signin styling */
+
+/* add table styling */
+.table{
+    overflow-x: auto;
+}
+
+table{
+    background-color: rgba(3, 3, 3, 0.8);
+    /* border-spacing: 0; */
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid tomato;
+    text-align: left;
+}
+th{
+    text-align: center;
+    font-size: 1.2em;
+    color: beige;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border: 1px solid tomato;
+}
+
+tbody{
+    font-size: 1em;
+}
+
+tbody tr td{
+    border: 1px solid tomato;
+    padding: 12px 0 12px 2px;
+
+}
+tr:nth-child(even){
+    background-color:  rgba(100, 100, 100, 0.8);
+}
+
+tbody tr:hover{
+    background-color: tomato;
+}
