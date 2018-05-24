@@ -311,4 +311,8 @@ tbody tr:hover{
 #add-request{
     margin-bottom: 2em;
 }
+
+div form{
+    background-color:  rgba(0, 0, 0, 0.8);
+}
 /* end request form styles in home-user */
