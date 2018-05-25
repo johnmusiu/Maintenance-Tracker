@@ -57,7 +57,7 @@ function toggleRequestForm(){
 }
 
 
-function toggleRequestDetails(id){
+function toggleRequestDetails(){
     //get table on page by htmltag, 0 gets obj of the first table in the page
     const table = document.getElementsByTagName("table")[0];
     // from table obj get tr rows list
@@ -69,43 +69,47 @@ function toggleRequestDetails(id){
         // Track with onclick(a row with a clicked event will trigger this)
         row.onclick = function(){
             var rowIndex = this.rowIndex;
-            insertDescRow(table, rows, rowIndex, id);            
+            insertDescRow(table, rows, rowIndex);            
         }
     }
 }
 
 //create row for request description
-function insertDescRow(table, rows, rowIndex, id){
+function insertDescRow(table, rows, rowIndex){
     const row = rows[rowIndex];
     console.log((rowIndex+1)+" "+rows.length)
     //if not last row, check if row should be added or deleted
     if(rows.length !== rowIndex+1){
         const nextRow = rows[rowIndex+1];
+        
         if(nextRow.classList.contains("shown")){
             //delete that row
             table.deleteRow(rowIndex+1);
             stop();
         }else{
+            //create a details row
             createRow(table, rowIndex, row);
         }
     }else{
         createRow(table, rowIndex, row);    
     }
-    openIcon.classList.add('');
-    openIcon.classList.remove('');
 }
 
 function createRow(table, rowIndex, row){
+    //create new row below the row where button was clicked
     const newRow = table.insertRow(rowIndex+1);
+    //get data from the row whose details need to be viewwd
+    // this data can come from json obj for row given data is being 
+    //retrieved from somewhere eg, a db
     const rowData = row.getElementsByTagName("td");
     newRow.classList.add("shown");
-    //insert and colspam cells
+    //insert td cells
     const tdataIndex = newRow.insertCell(0);
-    // tdataIndex.colSpan = 2;
     const tdataDetails = newRow.insertCell(1);
-    //insert tags into table
+    //colspan cell with details
     tdataDetails.colSpan = 8;
     tdataIndex.innerText = "";
+    
     tdataDetails.innerHTML = `<p> Name: <strong>${rowData[1].innerText}</strong> </p>`;
     tdataDetails.innerHTML += `<p> Time requested: <strong>${rowData[4].innerText}</strong> </p>`;
     tdataDetails.innerHTML += `<p> Description: <strong>${rowData[3].innerText}</strong> </p>`;
@@ -113,4 +117,5 @@ function createRow(table, rowIndex, row){
     
 
 }
+
 showSlide(1); 
