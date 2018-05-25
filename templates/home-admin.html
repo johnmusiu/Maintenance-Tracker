@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Maintenance Tracker</title>
     <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
@@ -23,7 +24,7 @@
     <div class="content">
         <p class="welcome"> Admin Annie, welcome to your dashboard! </p>
         <div class="table">
-            <table>
+            <table id="admin-table">
                 <caption>All historical maintenance requests
                     <div>Search Table:
                         <input type="search" name="search" id="search" placeholder="Input search phrase">
@@ -46,7 +47,8 @@
                     <th>Date Requested</th>
                     <th>Approved</th>
                     <th>Status</th>
-                    <th>Mark as <i class="fa fa-caret-down" aria-hidden="true"></i></th>
+                    <th>...</th>
+                    <th>...</td>
                 </thead>
                 <tbody>
                     <tr>
@@ -57,7 +59,11 @@
                         <td>12:09pm 12-05-2018</td>
                         <td>Pending approval</td>
                         <td>Open</td>
-                        <td><a href="">Approved</a></td>
+                        <td>
+                            <a class="approve-adm" href="approve/3">Approve <i class="fa fa-check-circle"></i></a><hr>
+                            <a class="reject-adm" href="reject/3">Reject <i class="fa fa-times-circle"></i></a>
+                        </td>
+                        <td class="open-icon" onclick="toggleRequestDetails(3)"> <a href="javascript:void(0);" ><i class="fa fa-envelope-open"></i></a> </td>
                     </tr>
                     <tr>
                         <td>2</td>
@@ -67,7 +73,8 @@
                         <td>08:23am 03-05-2018</td>
                         <td>Approved</td>
                         <td>Resolved</td>
-                        <td><a href="">Archive</a></td>
+                        <td><a class="archive-adm" href="archive/2">Archive  <i class="fa fa-archive"></i></a></td>
+                        <td class="open-icon" onclick="toggleRequestDetails(2)"> <a href="javascript:void(0);"><i class="fa fa-envelope-open"></i></a> </td>
                     </tr>
                     <tr>
                         <td>1</td>
@@ -78,6 +85,7 @@
                         <td>Approved</td>
                         <td>Ongoing</td>
                         <td><a href="">Completed</a></td>
+                        <td class="open-icon" onclick="toggleRequestDetails(1)"> <a href="javascript:void(0);" ><i class="fa fa-envelope-open"></i></a> </td>
                     </tr>
                 </tbody>
             </table>
