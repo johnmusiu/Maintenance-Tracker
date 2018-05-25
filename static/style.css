@@ -287,7 +287,7 @@ tr:nth-child(even){
 }
 
 tbody tr:hover{
-    background-color: tomato;
+    background-color: rgba(255, 99, 71, 0.5);
 }
 /* end tables design styles */
 
@@ -325,3 +325,35 @@ table caption div{
     float: right;
     padding: 5px;
 }
+td a.reject-adm{
+    font-size: 1.2em;
+    /* text-align: center; */
+    color: red;
+}
+.archive-adm{
+    font-size: 1.2em;
+    /* text-align: center; */
+    color: yellowgreen;
+}
+td a.approve-adm{
+    font-size: 1.2em;
+    /* text-align: center; */
+    color: #4CAF50;
+}
+td.open-icon{
+    font-size: 1.6em;
+    text-align: center;
+}
+/* style admin details view row */
+.shown{
+    color: white;
+    /* background-color: white; */
+    font-size: 1.5em;
+}
+.shown:hover{
+    background-color: black;
+}
+.shown p strong{
+    color: tomato;
+}
+/* end details row styling */
