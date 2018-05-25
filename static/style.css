@@ -316,3 +316,12 @@ div form{
     background-color:  rgba(0, 0, 0, 0.8);
 }
 /* end request form styles in home-user */
+
+td a{
+    color: white;
+}
+
+table caption div{
+    float: right;
+    padding: 5px;
+}
