@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Maintenance Tracker</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div class="topnav" id="topnav">
+        <a href="index.html">Maintenance Tracker</a>
+        <a class="active" href="">Home</a>
+            
+        <div class="right">
+            <a href=""><i class="fa fa-sign-out" aria-hidden="true"></i></a>
+        </div>
+        <a href="javascript:void(0);" class="nav-icon" onclick="toggleNavbar()">
+            <i class="fa fa-bars"></i>
+        </a>
+    </div>
+    <div class="content">
+        <p class="welcome"> Admin Annie, welcome to your dashboard! </p>
+        <div class="table">
+            <table>
+                <caption>All historical maintenance requests
+                    <div>Search Table:
+                        <input type="search" name="search" id="search" placeholder="Input search phrase">
+                        <select name="category" id="category">
+                            <option value="">All</option>
+                            <option value="">Pending Approval</option>
+                            <option value="">Approved</option>
+                            <option value="">Ongoing</option>
+                            <option value="">Resolved</option>
+                            <option value="">Archived</option>
+                            
+                        </select>
+                    </div>
+                </caption>
+                <thead>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Date Requested</th>
+                    <th>Approved</th>
+                    <th>Status</th>
+                    <th>Mark as <i class="fa fa-caret-down" aria-hidden="true"></i></th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>3</td>
+                        <td>Evans Sakwa</td>
+                        <td>Network Connectivity Issues</td>
+                        <td>I am unable to connect to the wifi network.</td>
+                        <td>12:09pm 12-05-2018</td>
+                        <td>Pending approval</td>
+                        <td>Open</td>
+                        <td><a href="">Approved</a></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Angela Madzela</td>
+                        <td>Mouse not working</td>
+                        <td>Lab 2 computer id 12 mouse broken</td>
+                        <td>08:23am 03-05-2018</td>
+                        <td>Approved</td>
+                        <td>Resolved</td>
+                        <td><a href="">Archive</a></td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Peter Pale</td>
+                        <td>Replace keyboards</td>
+                        <td>Lab 2 keyboards need to be replaced. They have been in use for 3 years.</td>
+                        <td>08:10am 01-05-2018</td>
+                        <td>Approved</td>
+                        <td>Ongoing</td>
+                        <td><a href="">Completed</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <p>Maintenance Tracker © 2018 John Musiu</p>
+    </footer>
+    
+    <script src="../static/script.js"></script>
+
+</body>
+</html>
