@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Maintenance Tracker</title>
-    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
@@ -13,25 +13,17 @@
         <a href="index.html">Maintenance Tracker</a>
             
         <div class="right">
-            <a class="active" href="signup.html">Sign Up</a>
-            <a href="signin.html">Login</a>
+            <a href="signup.html">Sign Up</a>
+            <a class="active" href="signin.html">Sign In</a>
         </div>
         <a href="javascript:void(0);" class="nav-icon" onclick="toggleNavbar()">
             <i class="fa fa-bars"></i>
         </a>
     </div>
     <div class="content">
-        <p class="welcome"> Signup </p>
+        <p class="welcome"> Sign In </p>
         <form class="signup" action="" method="post">
-            <p>Please fill in this form to create an account.</p>
-
-            <!-- first name -->
-            <label for="fname"><b>First Name</b></label> <br>
-            <input type="text" name="fname" id="fname" placeholder="Enter your first name" required>    
-            
-            <!-- last name -->
-            <label for="lname"><b>Last Name</b></label>
-            <input type="text" name="lname" id="lname" placeholder="Enter your last name" required>
+            <p>Please fill in this form to sign in.</p>
 
             <!-- email -->
             <label for="email"><b>Email Address</b></label>
@@ -41,12 +33,9 @@
             <label for="password"><b>Password</b></label>
             <input type="password" name="password" id="password" placeholder="Enter your password" required>
 
-            <!-- confirm password -->
-            <label for="confirm_password"><b>Confirm Password</b></label>
-            <input type="password" name="password" id="password" placeholder="Repeat your password" required>
-
+            
             <!-- submit -->
-            <button type="submit" class="btn-signup">Sign Up</button>
+            <button type="submit" class="btn-signup">Sign In</button>
         </form>
         <br>
     </div>
@@ -55,7 +44,7 @@
         <p>Maintenance Tracker © 2018 John Musiu</p>
     </footer>
     
-    <script src="../static/script.js"></script>
+    <script src="../static/js/script.js"></script>
 
 </body>
 </html>
