@@ -111,9 +111,11 @@ function createRow(table, rowIndex, row){
     tdataIndex.innerText = "";
     
     tdataDetails.innerHTML = `<p> Name: <strong>${rowData[1].innerText}</strong> </p>`;
-    tdataDetails.innerHTML += `<p> Time requested: <strong>${rowData[4].innerText}</strong> </p>`;
-    tdataDetails.innerHTML += `<p> Description: <strong>${rowData[3].innerText}</strong> </p>`;
-    tdataDetails.innerHTML += `<p> Status: <strong>${rowData[6].innerText}</strong></p>`;
+    tdataDetails.innerHTML += `<p> Title: <strong>${rowData[2].innerText}</strong> </p>`;
+    tdataDetails.innerHTML += `<p> Type: <strong>${rowData[3].innerText}</strong> </p>`;
+    tdataDetails.innerHTML += `<p> Time requested: <strong>${rowData[5].innerText}</strong> </p>`;
+    tdataDetails.innerHTML += `<p> Description: <strong>${rowData[4].innerText}</strong> </p>`;
+    tdataDetails.innerHTML += `<p> Status: <strong>${rowData[7].innerText}</strong></p>`;
     
 
 }

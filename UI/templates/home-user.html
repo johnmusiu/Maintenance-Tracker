@@ -35,6 +35,11 @@
                 <textarea type="text" name="description" id="description" placeholder="Enter a description" required>
                 </textarea>
 
+                <!-- type of request -->
+                <label for="type"><b>Type of Request</b></label> <br>
+                <input type="radio" name="type" id="type" value="maintenance">Maintenance <br>
+                <input type="radio" name="type" id="type" value="repair">Repair
+
                 <!-- submit -->
                 <button type="submit" class="btn-signup">Submit Request</button>
                 <br>
@@ -47,32 +52,35 @@
                 <thead>
                     <th>#</th>
                     <th>Title</th>
+                    <th>Type</th>
                     <th>Description</th>
                     <th>Date Requested</th>
                     <th>Approved</th>
                     <th>Status</th>
                     <!-- <th>Admin Comments</th> -->
-                    <!-- <th>Actions</th> -->
+                    <th>Actions</th>
                 </thead>
                 <tbody>
                     <tr>
                         <td>10</td>
                         <td>Network Connectivity Issues</td>
+                        <td>Maintenance</td>
                         <td>I am unable to connect to the wifi network.</td>
                         <td>12:09pm 12-05-2018</td>
                         <td>Approved</td>
                         <td>Not resolved</td>
-                        <!-- <td></td> -->
+                        <td><a href="">Edit</a>&nbsp;<a href="">Delete</a></td>
                         <!-- <td>More</td> -->
                     </tr>
                     <tr>
                         <td>7</td>
                         <td>Mouse not working</td>
+                        <td>Repair</td>
                         <td>Lab 2 computer id 12 mouse broken</td>
                         <td>08:23am 03-05-2018</td>
                         <td>Approved</td>
                         <td>Resolved</td>
-                        <!-- <td></td> -->
+                        <td> None </td>
                         <!-- <td>delete</td> -->
                     </tr>
                     <!-- <tr>
