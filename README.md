@@ -16,11 +16,11 @@ Maintenance Tracker App is an application that gives users the ability to reach 
 
 ## Relevant links on github pages
 
-[Landing page](https://johnmusiu.github.io/Maintenance-Tracker/)
+[Landing page](https://johnmusiu.github.io/Maintenance-Tracker/UI/templates/)
 
-[Admin home page](https://johnmusiu.github.io/Maintenance-Tracker/home-admin.html)
+[Admin home page](https://johnmusiu.github.io/Maintenance-Tracker/UI/templates/home-admin.html)
 
-[User home page](https://johnmusiu.github.io/Maintenance-Tracker/home-user.html)
+[User home page](https://johnmusiu.github.io/Maintenance-Tracker/UI/templates/home-user.html)
 
 ## Getting started
 
