@@ -2,7 +2,7 @@
 
 Maintenance Tracker App is an application that gives users the ability to reach out to operations/repairs department regarding repair or maintenance requests and monitor the status of their request.
 
-![index.html](https://github.com/johnmusiu/Maintenance-Tracker/landingpage.png)
+![index.html](https://github.com/johnmusiu/Maintenance-Tracker/blob/ch-update-readme-157898693/landingpage.png)
 
 ## Usage Examples
 
