@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Maintenance Tracker</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div class="topnav" id="topnav">
+        <a href="index.html">Maintenance Tracker</a>
+        <a class="active" href="home-user.html">Home</a>
+        <a id="request-form" href="javascript:void(0);" onclick="toggleRequestForm()">Make Request</a>
+            
+        <div class="right">
+            <a href=""><i class="fa fa-sign-out" aria-hidden="true"></i></a>
+        </div>
+        <a href="javascript:void(0);" class="nav-icon" onclick="toggleNavbar()">
+            <i class="fa fa-bars"></i>
+        </a>
+    </div>
+    <div class="content">
+        <p class="welcome"> Welcome to your dashboard </p>
+        <div class="hide-form" id="add-request">
+            <form action="" method="post">
+                <h3>Create new maintenance request</h3>
+                <!-- title -->
+                <label for="title"><b>Title</b></label> <br>
+                <input type="text" name="title" id="title" placeholder="Enter request title" required>    
+                
+                <!-- description -->
+                <label for="description"><b>Description</b></label>
+                <textarea type="text" name="description" id="description" placeholder="Enter a description" required>
+                </textarea>
+
+                <!-- type of request -->
+                <label for="type"><b>Type of Request</b></label> <br>
+                <input type="radio" name="type" id="type" value="maintenance">Maintenance <br>
+                <input type="radio" name="type" id="type" value="repair">Repair
+
+                <!-- submit -->
+                <button type="submit" class="btn-signup">Submit Request</button>
+                <br>
+            </form>
+            <hr>
+        </div>
+        <div class="table">
+            <table>
+                <caption>Your historical maintenance requests</caption>
+                <thead>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Date Requested</th>
+                    <th>Approved</th>
+                    <th>Status</th>
+                    <!-- <th>Admin Comments</th> -->
+                    <th>Actions</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>10</td>
+                        <td>Network Connectivity Issues</td>
+                        <td>Maintenance</td>
+                        <td>I am unable to connect to the wifi network.</td>
+                        <td>12:09pm 12-05-2018</td>
+                        <td>Approved</td>
+                        <td>Not resolved</td>
+                        <td><a href="">Edit</a>&nbsp;<a href="">Delete</a></td>
+                        <!-- <td>More</td> -->
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>Mouse not working</td>
+                        <td>Repair</td>
+                        <td>Lab 2 computer id 12 mouse broken</td>
+                        <td>08:23am 03-05-2018</td>
+                        <td>Approved</td>
+                        <td>Resolved</td>
+                        <td> None </td>
+                        <!-- <td>delete</td> -->
+                    </tr>
+                    <!-- <tr>
+                        <td>3</td>
+                        <td>Replace keyboards</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr> -->
+                </tbody>
+            </table>
+            <br>
+            <a class="btn-jump-to" href="#add-request" onclick="toggleRequestForm()">Create a Maintenance Request </a>   
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <p>Maintenance Tracker © 2018 John Musiu</p>
+    </footer>
+    
+    <script src="../static/js/script.js"></script>
+
+</body>
+</html>
