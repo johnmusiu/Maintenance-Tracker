@@ -218,6 +218,11 @@ input[type=text], input[type=email], input[type=password], textarea{
     /* border: none; */
 }
 
+input[type=radio]{
+    padding: 0.5em;
+    margin: 5px 0 22px 30%;
+}
+
 label, .btn-signup, form p{
     margin-left: 20%;
 }
@@ -238,6 +243,9 @@ label, .btn-signup, form p{
     input[type=text], input[type=email], input[type=password], textarea{
         margin-left: 2px;
         width: 85%
+    }
+    input[type=radio]{
+        margin-left: 2px;
     }
     .signup, .signin{
         margin-left: 1%;
