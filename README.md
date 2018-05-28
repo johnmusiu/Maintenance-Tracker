@@ -6,8 +6,6 @@ Maintenance Tracker App is an application that gives users the ability to reach 
 
 ## Usage Examples
 
-----------
-
 - Users can create an account and log in.
 - The users can make maintenance or repairs request.
 - An admin can approve/reject a repair/maintenance request.
@@ -18,8 +16,6 @@ Maintenance Tracker App is an application that gives users the ability to reach 
 
 ## Relevant links on github pages
 
-----------
-
 [Landing page](https://johnmusiu.github.io/Maintenance-Tracker/)
 
 [Admin home page](https://johnmusiu.github.io/Maintenance-Tracker/home-admin.html)
@@ -27,8 +23,6 @@ Maintenance Tracker App is an application that gives users the ability to reach 
 [User home page](https://johnmusiu.github.io/Maintenance-Tracker/home-user.html)
 
 ## Getting started
-
-----------
 
 The following steps will get this project up and running on your local enviroment.
 
@@ -52,15 +46,11 @@ You need to have installed:
 
 ## Built With
 
-----------
-
 - HTML5
 - CSS
 - Javascript
 
 ## Contributing
-
-----------
 
 1. Fork it (https://github.com/johnmusiu/Maintenance-Tracker/fork)
 2. Create your feature branch (```git checkout -b feature/some-feature```)
@@ -69,7 +59,5 @@ You need to have installed:
 5. Create a new Pull Request
 
 ## Author(s)
-
-----------
 
 John Musiu johnmusiu@gmail.com
