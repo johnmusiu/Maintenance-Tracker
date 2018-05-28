@@ -26,8 +26,8 @@ footer{
 }
 
 .content{
-    background-color: rgba(3, 3, 3, 0.8);
-    color: wheat;
+    background-color: rgba(255, 255, 255, 1);
+    color: black;
     padding-left: 2.5%;
     padding-right: 2.5%;
     overflow: hidden;
@@ -64,8 +64,7 @@ footer{
 
 /* welcome text styling */
 .welcome{
-    font-style: oblique;
-    font-family: fantasy;
+    /* font-style: oblique; */
     font-size: 2.5em;
     text-align: center;
 }
@@ -113,7 +112,7 @@ footer{
 /* form signup and signin styling */
 .signup, .signin{
     border: none;
-    color: whitesmoke;
+    color: black;
     margin: 2% 0 3% 0;
     
 }
@@ -160,7 +159,8 @@ footer{
 }
 /* slide class */
 .slide{
-    color: tomato;
+    background-color: rgba(255, 255, 255, 0.5);
+    color: black;
     font-size: 2em;
     display: none;
     text-align: center;
@@ -179,7 +179,7 @@ footer{
     cursor: pointer;
     width: auto;
     margin-top: -30px;
-    color: white;
+    color: black;
     border-radius: 0 3px 3px 0;
 }
 /* position next arrow to the right */
@@ -199,7 +199,7 @@ footer{
     height: 15px;
     width: 15px;
     margin: 0 2px;
-    background-color: beige;
+    background-color: black;
     display: inline-block;
     border-radius: 50%;
     transition: background-color 0.6s ease;
@@ -222,13 +222,15 @@ input[type=radio]{
     padding: 0.5em;
     margin: 5px 0 22px 30%;
 }
-
+button:hover{
+    background-color: yellowgreen;
+}
 label, .btn-signup, form p{
     margin-left: 20%;
 }
 
 .btn-signup{
-    color: white;
+    color: black;
     background-color: #4CAF50; 
     border-radius: 5px;
     padding: 0.5rem;
@@ -265,20 +267,20 @@ label, .btn-signup, form p{
 }
 
 table{
-    background-color: rgba(3, 3, 3, 0.8);
+    background-color: rgba(255, 255, 255, 0.8);
     /* border-spacing: 0; */
     width: 100%;
     border-collapse: collapse;
-    border: 1px solid tomato;
+    border: 1px solid black;
     text-align: left;
 }
 th{
     text-align: center;
     font-size: 1.2em;
-    color: beige;
+    color: black;
     padding-top: 12px;
     padding-bottom: 12px;
-    border: 1px solid tomato;
+    border: 1px solid black;
 }
 
 tbody{
@@ -286,12 +288,12 @@ tbody{
 }
 
 tbody tr td{
-    border: 1px solid tomato;
+    border: 1px solid black;
     padding: 12px 0 12px 2px;
 
 }
 tr:nth-child(even){
-    background-color:  rgba(100, 100, 100, 0.8);
+    background-color:  rgba(100, 100, 100, 0.2);
 }
 
 tbody tr:hover{
@@ -309,7 +311,7 @@ tbody tr:hover{
 }
 
 .btn-jump-to{
-    color: white;
+    color: blue;
 }
 
 .show-form{
@@ -321,12 +323,12 @@ tbody tr:hover{
 }
 
 div form{
-    background-color:  rgba(0, 0, 0, 0.8);
+    background-color:  rgba(255, 255, 255, 0.3);
 }
 /* end request form styles in home-user */
 
 td a{
-    color: white;
+    color: green;
 }
 
 table caption div{
@@ -341,12 +343,17 @@ td a.reject-adm{
 .archive-adm{
     font-size: 1.2em;
     /* text-align: center; */
-    color: yellowgreen;
+    color: gray;
+}
+.resolve-adm{
+    font-size: 1.2em;
+    /* text-align: center; */
+    color: green;
 }
 td a.approve-adm{
     font-size: 1.2em;
     /* text-align: center; */
-    color: #4CAF50;
+    color: rgb(32, 199, 37);
 }
 td.open-icon{
     font-size: 1.6em;
@@ -354,14 +361,14 @@ td.open-icon{
 }
 /* style admin details view row */
 .shown{
-    color: white;
+    color: black;
     /* background-color: white; */
     font-size: 1.5em;
 }
 .shown:hover{
-    background-color: black;
+    background-color: white;
 }
 .shown p strong{
-    color: tomato;
+    color: black;
 }
 /* end details row styling */
