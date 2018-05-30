@@ -200,6 +200,30 @@ class TestAPIRequests(unittest.TestCase):
         self.assertEqual(result2["message"], "Request id found")
         self.assertEqual(result2["title"], "Fix mouses")
     # end tests for api get request by id
+
+    # begin tests for api get all requests
+    def test_api_can_get_all_requests(self):
+        """ 
+            test that if user has requests, api can retrieve them
+            test that if user has no requests a suitable response is returned
+        """
+        # test fetching a requests for user who has not submited any requests
+        response = self.app_client.get('/users/requests/')
+        result = json.loads(response.data)
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(result["message"], "You have not made any requests yet!")
+        
+        # insert request
+        response1 = self.app_client.post('/users/requests/', 
+                                data=json.dumps(self.sample_request), 
+                                content_type='application/json')
+        self.assertEqual(response1.status_code, 201)
+
+        response = self.app_client.get('/users/requests/')
+        result = json.loads(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Fix mouses", result)
+    # end tests for api get all requests
     
     def tearDown(self):
         """ teardown all initialized variables """
