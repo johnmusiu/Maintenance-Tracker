@@ -41,7 +41,7 @@ class TestAPIRequests(unittest.TestCase):
         """
             Test API make maintenance request with all details provided correctly
         """
-        response = self.app_client.post('/users/requests/', 
+        response = self.app_client.post('/api/v1/users/requests', 
                                 data=json.dumps(self.sample_request), 
                                 content_type="application/json")
         result = json.loads(response.data)
@@ -56,7 +56,7 @@ class TestAPIRequests(unittest.TestCase):
         """
         # test for null title
         self.sample_request['title'] = ""
-        response = self.app_client.post('/users/requests/', 
+        response = self.app_client.post('/api/v1/users/requests', 
                                     data=json.dumps(self.sample_request),
                                     content_type="application/json")
         result = json.loads(response.data)
@@ -66,7 +66,7 @@ class TestAPIRequests(unittest.TestCase):
         # test for null description
         self.sample_request['title'] = "Fix mouses"
         self.sample_request['description'] = ""
-        response = self.app_client.post('/users/requests/', 
+        response = self.app_client.post('/api/v1/users/requests', 
                                     data=json.dumps(self.sample_request),
                                     content_type="application/json")
         result = json.loads(response.data)
@@ -76,7 +76,7 @@ class TestAPIRequests(unittest.TestCase):
         # test for null request type
         self.sample_request['description'] = "mouses in lab 2 not working"
         self.sample_request['type'] = ""
-        response = self.app_client.post('/users/requests/', 
+        response = self.app_client.post('/api/v1/users/requests', 
                                     data=json.dumps(self.sample_request),
                                     content_type="application/json")
         result = json.loads(response.data)
@@ -89,7 +89,7 @@ class TestAPIRequests(unittest.TestCase):
             returns a value error
         """
         self.sample_request['type'] = "Another type"
-        response = self.app_client.post('/users/requests/', 
+        response = self.app_client.post('/api/v1/users/requests', 
                                     data=json.dumps(self.sample_request),
                                     content_type="application/json")
         result = json.loads(response.data)
@@ -100,7 +100,7 @@ class TestAPIRequests(unittest.TestCase):
     # begin tests for api update request
     def test_api_can_update_request(self):
         """ test user can update a request that is not resolved """
-        response = self.app_client.post('/users/requests/', 
+        response = self.app_client.post('/api/v1/users/requests', 
                                 data=json.dumps(self.sample_request), 
                                 content_type='application/json')
         self.assertEqual(response.status_code, 201)
@@ -108,7 +108,7 @@ class TestAPIRequests(unittest.TestCase):
         # update values on data to be submitted
         self.sample_request['title'] = "Fix mouses and keyboards"
         self.sample_request['description'] = "Mouses and keyboards in lab 2 not working"
-        response1 = self.app_client.put('/users/requests/1', 
+        response1 = self.app_client.put('/api/v1/users/requests/1', 
                                     data=json.dumps(self.sample_request),
                                     content_type='application/json')
 
@@ -123,7 +123,7 @@ class TestAPIRequests(unittest.TestCase):
             title/description/type
         """
         #insert request
-        response = self.app_client.post('/users/requests/', 
+        response = self.app_client.post('/api/v1/users/requests', 
                                 data=json.dumps(self.sample_request), 
                                 content_type="application/json")
         result = json.loads(response.data)
@@ -131,7 +131,7 @@ class TestAPIRequests(unittest.TestCase):
 
         # test for null title
         self.sample_request['title'] = ""
-        response = self.app_client.put('/users/requests/', 
+        response = self.app_client.put('/api/v1/users/requests', 
                                     data=json.dumps(self.sample_request),
                                     content_type="application/json")
         result = json.loads(response.data)
@@ -141,7 +141,7 @@ class TestAPIRequests(unittest.TestCase):
         # test for null description
         self.sample_request['title'] = "Fix mouses"
         self.sample_request['description'] = ""
-        response = self.app_client.put('/users/requests/', 
+        response = self.app_client.put('/api/v1/users/requests', 
                                     data=json.dumps(self.sample_request),
                                     content_type="application/json")
         result = json.loads(response.data)
@@ -151,7 +151,7 @@ class TestAPIRequests(unittest.TestCase):
         # test for null request type
         self.sample_request['description'] = "mouses in lab 2 not working"
         self.sample_request['type'] = ""
-        response = self.app_client.put('/users/requests/', 
+        response = self.app_client.put('/api/v1/users/requests', 
                                     data=json.dumps(self.sample_request),
                                     content_type="application/json")
         result = json.loads(response.data)
@@ -164,7 +164,7 @@ class TestAPIRequests(unittest.TestCase):
             returns a value error
         """
         self.sample_request['type'] = "Another type"
-        response = self.app_client.post('/users/requests/', 
+        response = self.app_client.post('/api/v1/users/requests', 
                                     data=json.dumps(self.sample_request),
                                     content_type="application/json")
         result = json.loads(response.data)
@@ -179,7 +179,7 @@ class TestAPIRequests(unittest.TestCase):
             test that a suitable message is returned if a requested id doesn't exists 
         """
         # test fetching a request entry that doesn't exist
-        response = self.app_client.get('/users/requests/1',
+        response = self.app_client.get('/api/v1/users/requests/1',
                                             data=json.dumps(self.sample_request),
                                             content_type='application/json')
         result = json.loads(response.data)
@@ -187,12 +187,12 @@ class TestAPIRequests(unittest.TestCase):
         self.assertIn(result["message"], "Request id not found")
 
         # add request, and try to fetch request id 1
-        response = self.app_client.post('/users/requests/', 
+        response = self.app_client.post('/api/v1/users/requests', 
                                 data=json.dumps(self.sample_request), 
                                 content_type='application/json')
         self.assertEqual(response.status_code, 201)
         result = json.loads(response.data)
-        response2 = self.app_client.get('/users/requests/{}'.format(result["id"]),
+        response2 = self.app_client.get('/api/v1/users/requests/{}'.format(result["id"]),
                                             data=json.dumps(self.sample_request),
                                             content_type='application/json')
         result2 = json.loads(response2.data)
@@ -208,18 +208,18 @@ class TestAPIRequests(unittest.TestCase):
             test that if user has no requests a suitable response is returned
         """
         # test fetching a requests for user who has not submited any requests
-        response = self.app_client.get('/users/requests/')
+        response = self.app_client.get('/api/v1/users/requests')
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 404)
         self.assertEqual(result["message"], "You have not made any requests yet!")
         
         # insert request
-        response1 = self.app_client.post('/users/requests/', 
+        response1 = self.app_client.post('/api/v1/users/requests', 
                                 data=json.dumps(self.sample_request), 
                                 content_type='application/json')
         self.assertEqual(response1.status_code, 201)
 
-        response = self.app_client.get('/users/requests/')
+        response = self.app_client.get('/api/v1/users/requests')
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
         self.assertIn("Fix mouses", result)
