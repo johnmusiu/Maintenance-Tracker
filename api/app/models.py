@@ -10,7 +10,7 @@ class Request():
     """ the requests model """
     user_requests = {}
 
-    def __init__(self, title, description, category):
+    def __init__(self, title=None, description=None, category=None):
         """initialize instance variables """
         self.title = title
         self.description = description
@@ -25,8 +25,8 @@ class Request():
         count = 0
         for user, user_requests in requests.iteritems():
             count += len(user_requests)
-        new_request = ({self.title: (self.description, self.category,user_id, 
-                                      self.status, self.created_at)})
+        new_request = ({self.title: (count+1, self.description, self.category,
+                                      user_id, self.status, self.created_at)})
         if my_requests != "0":
             """check if request already exists """
             is_exist = my_requests.get(self.title, "0")
@@ -51,5 +51,14 @@ class Request():
 
 
     @staticmethod
-    def get_by_id():
+    def get_by_id(user_id, request_id):
         """ get request by id"""
+        my_requests = requests.get(user_id, "0")
+        
+        if my_requests == "0":
+            return ("0")
+        for request_title, req_dets in my_requests.iteritems():
+            if req_dets[0] == request_id:
+                return ("1", request_title, req_dets)
+        return ("0")
+        
