@@ -5,7 +5,7 @@ This module include tests to the different endpoints of the API
 
 import unittest
 import json
-from api import app
+from api import create_app
 
 class TestAPIRequests(unittest.TestCase):
     """
@@ -18,8 +18,8 @@ class TestAPIRequests(unittest.TestCase):
 
     def setUp(self):
         """ this is run before each test """
-        app.testing = True
-        self.app_client = app.test_client()
+        self.app = create_app(config_name="testing")
+        self.app_client = self.app.test_client
         self.sample_user = {
             "name": "Bob Burgers",
             "email": "bob@example.com",
@@ -41,7 +41,7 @@ class TestAPIRequests(unittest.TestCase):
         """
             Test API make maintenance request with all details provided correctly
         """
-        response = self.app_client.post('/api/v1/users/requests', 
+        response = self.app_client().post('/api/v1/users/requests', 
                                 data=json.dumps(self.sample_request), 
                                 content_type="application/json")
         result = json.loads(response.data)
@@ -56,31 +56,31 @@ class TestAPIRequests(unittest.TestCase):
         """
         # test for null title
         self.sample_request['title'] = ""
-        response = self.app_client.post('/api/v1/users/requests', 
+        response = self.app_client().post('/api/v1/users/requests', 
                                     data=json.dumps(self.sample_request),
                                     content_type="application/json")
         result = json.loads(response.data)
-        self.assertEqual(result["message"], "Please fill in the 'title' field")
+        self.assertEqual(result["message"], "Please fill in the 'title' field.")
         self.assertEqual(response.status_code, 400)
 
         # test for null description
         self.sample_request['title'] = "Fix mouses"
         self.sample_request['description'] = ""
-        response = self.app_client.post('/api/v1/users/requests', 
+        response = self.app_client().post('/api/v1/users/requests', 
                                     data=json.dumps(self.sample_request),
                                     content_type="application/json")
         result = json.loads(response.data)
-        self.assertEqual(result["message"], "Please fill in the 'description' field")
+        self.assertEqual(result["message"], "Please fill in the 'description' field.")
         self.assertEqual(response.status_code, 400)
 
         # test for null request type
         self.sample_request['description'] = "mouses in lab 2 not working"
         self.sample_request['type'] = ""
-        response = self.app_client.post('/api/v1/users/requests', 
+        response = self.app_client().post('/api/v1/users/requests', 
                                     data=json.dumps(self.sample_request),
                                     content_type="application/json")
         result = json.loads(response.data)
-        self.assertEqual(result["message"], "Please fill in the 'type' field")
+        self.assertEqual(result["message"], "Please fill in the 'type' field.")
         self.assertEqual(response.status_code, 400)
 
     def test_create_request_with_invalid_type(self):
@@ -89,18 +89,18 @@ class TestAPIRequests(unittest.TestCase):
             returns a value error
         """
         self.sample_request['type'] = "Another type"
-        response = self.app_client.post('/api/v1/users/requests', 
+        response = self.app_client().post('/api/v1/users/requests', 
                                     data=json.dumps(self.sample_request),
                                     content_type="application/json")
         result = json.loads(response.data)
-        self.assertEqual(result["message"], "Type can only be Maintenance or Repair")
+        self.assertEqual(result["message"], "Type can only be Maintenance or Repair.")
         self.assertEqual(response.status_code, 400)
     # end tests for api create task
 
     # begin tests for api update request
     def test_api_can_update_request(self):
         """ test user can update a request that is not resolved """
-        response = self.app_client.post('/api/v1/users/requests', 
+        response = self.app_client().put('/api/v1/users/requests', 
                                 data=json.dumps(self.sample_request), 
                                 content_type='application/json')
         self.assertEqual(response.status_code, 201)
@@ -108,7 +108,7 @@ class TestAPIRequests(unittest.TestCase):
         # update values on data to be submitted
         self.sample_request['title'] = "Fix mouses and keyboards"
         self.sample_request['description'] = "Mouses and keyboards in lab 2 not working"
-        response1 = self.app_client.put('/api/v1/users/requests/1', 
+        response1 = self.app_client().put('/api/v1/users/requests/1', 
                                     data=json.dumps(self.sample_request),
                                     content_type='application/json')
 
@@ -123,7 +123,7 @@ class TestAPIRequests(unittest.TestCase):
             title/description/type
         """
         #insert request
-        response = self.app_client.post('/api/v1/users/requests', 
+        response = self.app_client().put('/api/v1/users/requests', 
                                 data=json.dumps(self.sample_request), 
                                 content_type="application/json")
         result = json.loads(response.data)
@@ -131,31 +131,31 @@ class TestAPIRequests(unittest.TestCase):
 
         # test for null title
         self.sample_request['title'] = ""
-        response = self.app_client.put('/api/v1/users/requests', 
+        response = self.app_client().put('/api/v1/users/requests', 
                                     data=json.dumps(self.sample_request),
                                     content_type="application/json")
         result = json.loads(response.data)
-        self.assertEqual(result["message"], "Please fill in the 'title' field")
+        self.assertEqual(result["message"], "Please fill in the 'title' field.")
         self.assertEqual(response.status_code, 400)
 
         # test for null description
         self.sample_request['title'] = "Fix mouses"
         self.sample_request['description'] = ""
-        response = self.app_client.put('/api/v1/users/requests', 
+        response = self.app_client().put('/api/v1/users/requests', 
                                     data=json.dumps(self.sample_request),
                                     content_type="application/json")
         result = json.loads(response.data)
-        self.assertEqual(result["message"], "Please fill in the 'description' field")
+        self.assertEqual(result["message"], "Please fill in the 'description' field.")
         self.assertEqual(response.status_code, 400)
 
         # test for null request type
         self.sample_request['description'] = "mouses in lab 2 not working"
         self.sample_request['type'] = ""
-        response = self.app_client.put('/api/v1/users/requests', 
+        response = self.app_client().put('/api/v1/users/requests', 
                                     data=json.dumps(self.sample_request),
                                     content_type="application/json")
         result = json.loads(response.data)
-        self.assertEqual(result["message"], "Please fill in the 'type' field")
+        self.assertEqual(result["message"], "Please fill in the 'type' field.")
         self.assertEqual(response.status_code, 400)
 
     def test_update_request_with_invalid_type(self):
@@ -164,11 +164,11 @@ class TestAPIRequests(unittest.TestCase):
             returns a value error
         """
         self.sample_request['type'] = "Another type"
-        response = self.app_client.post('/api/v1/users/requests', 
+        response = self.app_client().post('/api/v1/users/requests', 
                                     data=json.dumps(self.sample_request),
                                     content_type="application/json")
         result = json.loads(response.data)
-        self.assertEqual(result["message"], "Type can only be Maintenance or Repair")
+        self.assertEqual(result["message"], "Type can only be Maintenance or Repair.")
         self.assertEqual(response.status_code, 400)
     # end tests for update request
 
@@ -179,25 +179,25 @@ class TestAPIRequests(unittest.TestCase):
             test that a suitable message is returned if a requested id doesn't exists 
         """
         # test fetching a request entry that doesn't exist
-        response = self.app_client.get('/api/v1/users/requests/1',
+        response = self.app_client().get('/api/v1/users/requests/1',
                                             data=json.dumps(self.sample_request),
                                             content_type='application/json')
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 404)
-        self.assertIn(result["message"], "Request id not found")
+        self.assertIn(result["message"], "Request id not found.")
 
         # add request, and try to fetch request id 1
-        response = self.app_client.post('/api/v1/users/requests', 
+        response = self.app_client().post('/api/v1/users/requests', 
                                 data=json.dumps(self.sample_request), 
                                 content_type='application/json')
         self.assertEqual(response.status_code, 201)
         result = json.loads(response.data)
-        response2 = self.app_client.get('/api/v1/users/requests/{}'.format(result["id"]),
+        response2 = self.app_client().get('/api/v1/users/requests/{}'.format(result["id"]),
                                             data=json.dumps(self.sample_request),
                                             content_type='application/json')
         result2 = json.loads(response2.data)
         self.assertEqual(response2.status_code, 200)
-        self.assertEqual(result2["message"], "Request id found")
+        self.assertEqual(result2["message"], "Request id found.")
         self.assertEqual(result2["title"], "Fix mouses")
     # end tests for api get request by id
 
@@ -208,18 +208,18 @@ class TestAPIRequests(unittest.TestCase):
             test that if user has no requests a suitable response is returned
         """
         # test fetching a requests for user who has not submited any requests
-        response = self.app_client.get('/api/v1/users/requests')
+        response = self.app_client().get('/api/v1/users/requests')
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 404)
         self.assertEqual(result["message"], "You have not made any requests yet!")
         
         # insert request
-        response1 = self.app_client.post('/api/v1/users/requests', 
+        response1 = self.app_client().post('/api/v1/users/requests', 
                                 data=json.dumps(self.sample_request), 
                                 content_type='application/json')
         self.assertEqual(response1.status_code, 201)
 
-        response = self.app_client.get('/api/v1/users/requests')
+        response = self.app_client().get('/api/v1/users/requests')
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
         self.assertIn("Fix mouses", result)
