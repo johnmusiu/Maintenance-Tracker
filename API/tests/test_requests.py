@@ -171,6 +171,35 @@ class TestAPIRequests(unittest.TestCase):
         self.assertEqual(result["message"], "Type can only be Maintenance or Repair")
         self.assertEqual(response.status_code, 400)
     # end tests for update request
+
+    # begin tests for api get request by id
+    def test_api_can_get_request_by_id(self):
+        """ 
+            test that one bucket list can be retrieved if it exists
+            test that a suitable message is returned if a requested id doesn't exists 
+        """
+        # test fetching a request entry that doesn't exist
+        response = self.app_client.get('/users/requests/1',
+                                            data=json.dumps(self.sample_request),
+                                            content_type='application/json')
+        result = json.loads(response.data)
+        self.assertEqual(response.status_code, 404)
+        self.assertIn(result["message"], "Request id not found")
+
+        # add request, and try to fetch request id 1
+        response = self.app_client.post('/users/requests/', 
+                                data=json.dumps(self.sample_request), 
+                                content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+        result = json.loads(response.data)
+        response2 = self.app_client.get('/users/requests/{}'.format(result["id"]),
+                                            data=json.dumps(self.sample_request),
+                                            content_type='application/json')
+        result2 = json.loads(response2.data)
+        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(result2["message"], "Request id found")
+        self.assertEqual(result2["title"], "Fix mouses")
+    # end tests for api get request by id
     
     def tearDown(self):
         """ teardown all initialized variables """
