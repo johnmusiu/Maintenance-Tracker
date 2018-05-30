@@ -5,7 +5,7 @@ This module include tests to the different endpoints of the API
 
 import unittest
 import json
-from api import app
+from api import create_app
 
 class TestAPIRequests(unittest.TestCase):
     """
@@ -18,8 +18,8 @@ class TestAPIRequests(unittest.TestCase):
 
     def setUp(self):
         """ this is run before each test """
-        app.testing = True
-        self.app_client = app.test_client()
+        create_app.testing = True
+        self.app_client = create_app.test_client()
         self.sample_user = {
             "name": "Bob Burgers",
             "email": "bob@example.com",
