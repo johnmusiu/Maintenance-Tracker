@@ -87,7 +87,7 @@ class TestAPIAuth(unittest.TestCase):
                                     data=json.dumps(self.sample_user),
                                     content_type="application/json")
         result = json.loads(response.data)
-        self.assertEqual(result["error"], "Please enter a valid email address!")
+        self.assertEqual(result["message"], "Please enter a valid email address!")
         self.assertEqual(response.status_code, 400)  
     # end tests for api user signin
 
@@ -142,7 +142,7 @@ class TestAPIAuth(unittest.TestCase):
                                     data=json.dumps(self.sample_user),
                                     content_type="application/json")
         result = json.loads(response.data)
-        self.assertEqual(result["error"], "Please provide a valid email address!")
+        self.assertEqual(result["message"], "Please provide a valid email address!")
         self.assertEqual(response.status_code, 400)  
 
     def test_signup_invalid_fields(self):
@@ -157,7 +157,7 @@ class TestAPIAuth(unittest.TestCase):
                                     data=json.dumps(self.sample_user),
                                     content_type="application/json")
         result = json.loads(response.data)
-        self.assertEqual(result["error"], "Please provide a valid name!")
+        self.assertEqual(result["message"], "Please provide a valid name!")
         self.assertEqual(response.status_code, 400) 
 
         #test invalid email
@@ -167,9 +167,19 @@ class TestAPIAuth(unittest.TestCase):
                                     data=json.dumps(self.sample_user),
                                     content_type="application/json")
         result = json.loads(response.data)
-        self.assertEqual(result["error"], "Please provide a valid email address!")
+        self.assertEqual(result["message"], "Please provide a valid email address!")
         self.assertEqual(response.status_code, 400)  
+    
+    def test_signup_weak_password(self):
+        """ test signup using a weak password """
         
+        self.sample_user['password'] = "weakpasshere"
+        response = self.app_client.post('/api/v1/auth/register/', 
+                                    data=json.dumps(self.sample_user),
+                                    content_type="application/json")
+        result = json.loads(response.data)
+        self.assertEqual(result["message"], "Please enter a strong password to signup!")
+        self.assertEqual(response.status_code, 400) 
     # end tests for api user signup
 
 if __name__ == "__main__":
