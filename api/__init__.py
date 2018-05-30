@@ -21,38 +21,47 @@ def create_app(config_name):
             category = str(request.data.get('type', ''))
             if not title:
                 response = jsonify({
-                    "message": "Please fill in 'title' field"
+                    "message": "Please fill in the 'title' field."
                 })
                 response.status_code = 400
                 return response
             if not description: 
                 response = jsonify({
-                    "message": "Please fill in 'description' field"
+                    "message": "Please fill in the 'description' field."
                 })
                 response.status_code = 400
                 return response
             if not category:
                 response = jsonify({
-                    "message": "Please fill in 'type' field"
+                    "message": "Please fill in the 'type' field."
                 })
                 response.status_code = 400
                 return response
             if category not in ['maintenance', 'repair']:
                 response = jsonify({
-                    "message": "Please provide a valid request type"
+                    "message": "Type can only be Maintenance or Repair."
                 })
                 response.status_code = 400
                 return response
             
             request_obj = Request(title, description, category)
-            request_obj.save()
-            response = jsonify({
-                'title': title,
-                'description': description,
-                'category': category,
-            })
-            response.status_code = 201
-        else:
-            return jsonify({"message": "get requests"})
+            result = request_obj.save(1)
+            
+            if result[0] == "1":
+                response = jsonify({
+                    'message': "Maintenance request submitted successfully.",
+                    'title': title,
+                    'description': description,
+                    'category': category,
+                })
+                response.status_code = 201
+            else:
+                response = jsonify({
+                    "message": "Duplicate request, request not saved"
+                })
+                response.status_code = 202
+            return response
+        elif request.method == "GET":
+            return jsonify({"message": "get requests"}) 
 
     return app
