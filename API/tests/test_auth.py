@@ -42,6 +42,22 @@ class TestAPIAuth(unittest.TestCase):
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(result["message"], "Login success, welcome!")
+    def test_signin_incorrect_credentials(self):
+        """
+            Test API user signin with incorrect credentials
+        """
+        response = self.app_client.post('/api/v1/auth/register', 
+                                data=json.dumps(self.sample_user), 
+                                content_type="application/json")
+        self.assertEqual(response.status_code, 201)
+
+        response = self.app_client.post('/api/v1/auth/login',
+                                data=json.dumps(self.sample_user),
+                                content_type="application/json")
+        
+        result = json.loads(response.data)
+        self.assertEqual(response.status_code, 202)
+        self.assertEqual(result["message"], "Wrong login credentials provided!")
 
     def test_signin_null_field(self):
         """ test user signin given email/password provided is null """
@@ -153,6 +169,7 @@ class TestAPIAuth(unittest.TestCase):
         result = json.loads(response.data)
         self.assertEqual(result["error"], "Please provide a valid email address!")
         self.assertEqual(response.status_code, 400)  
+        
     # end tests for api user signup
 
 if __name__ == "__main__":
