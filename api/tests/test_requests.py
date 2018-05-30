@@ -5,7 +5,7 @@ This module include tests to the different endpoints of the API
 
 import unittest
 import json
-from API import app
+from api import app
 
 class TestAPIRequests(unittest.TestCase):
     """
