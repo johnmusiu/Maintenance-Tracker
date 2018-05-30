@@ -7,7 +7,7 @@ This module include tests to the auth endpoints of the API ie
 
 import unittest
 import json
-from API import app
+from api import app
 
 
 class TestAPIAuth(unittest.TestCase):
