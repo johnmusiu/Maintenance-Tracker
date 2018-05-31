@@ -1,11 +1,66 @@
 """
     defines the data models of the app
 """
+import os
+from flask import current_app
 import time
+from datetime import datetime, timedelta
+from werkzeug.security import generate_password_hash, check_password_hash
+import jwt
 
 #initialize an empty requests list
 requests = {}
+users = {}
 
+class User():
+    """ the user model """
+    def __init__(self, name=None, email=None, password=None):
+        self.name = name
+        self.email = email
+        self.password = generate_password_hash(password)
+
+    def signup(self):
+        """ define method to create an account"""
+        #check if email taken
+        if users.get(self.email):
+            return ("0", "Email address already registered under another account")
+        count_users = len(users)
+        users[self.email] = (count_users+1, self.name, self.password)
+        return ("1", "Registration successful.", (count_users+1, self.email, self.name))
+    
+    def verify_password(self, password):
+        """ function to verify password hash """
+        return check_password_hash(self.password, password)
+    
+    def encode_auth_token(self, user_id):
+        """ generate an authentication token and return a string error exception"""
+        try:
+            payload ={
+                'subject': user_id,
+                'created_at': datetime.utcnow(),
+                'expires_at': datetime.utcnow() + timedelta(minutes=15)
+            }
+            jwt_string = jwt.encode_auth_token(
+                payload, os.getenv('SECRET_KEY'), algorithm='HS256'
+            )
+            return jwt_string
+        except Exception as ex:
+            return ex
+    
+    @staticmethod
+    def decode_auth_token(auth_token):
+        """ 
+            Decode the authentification token,
+            check its validity 
+        """
+        try:
+            payload = jwt.decode_auth_token(auth_token, os.getenv('SECRET_KEY'))
+            return payload['subject']
+        except jwt.ExpiredSignatureError:
+            return 'Your token expired, please sign in to continue!'
+        except jwt.InvalidTokenError:
+            return 'Invalid token, please sign in!'
+        
 class Request():
     """ the requests model """
 
