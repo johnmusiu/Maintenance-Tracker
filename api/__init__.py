@@ -95,11 +95,12 @@ def create_app(config_name):
             response.status_code = 400
             return response
         results = Request().update(1, request_id, title, description, category)
+        print results
         if results[0] == "0":
             return jsonify({"message": results[1]}), 404
         else:
             return jsonify({
                 "message": "Request updated successfully",
                 "request": results[1]
-            })
+            }), 200
     return app
