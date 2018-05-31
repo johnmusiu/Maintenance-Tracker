@@ -2,7 +2,7 @@
  defines the endpoints of the API
 """
 from flask_api import FlaskAPI
-from flask import request, jsonify, abort
+from flask import request, jsonify, json, abort
 from instance.config import app_config
 
 def create_app(config_name):
@@ -68,6 +68,11 @@ def create_app(config_name):
                 response.status_code = 202
             return response
         elif request.method == "GET":
-            return jsonify({"message": "get requests"}) 
-
+            #returns all requests made by a certain user
+            result = Request().get_all_my_requests(1)
+            if result == "0":
+                return jsonify(
+                        {"message": "You have not made any requests yet!"}), 404
+            response = json.dumps(result[1])
+            return response, 200
     return app
