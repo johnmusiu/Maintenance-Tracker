@@ -30,6 +30,7 @@ class Request():
                                     user_id, self.status, self.created_at, 
                                     self.updated_at)})
 
+
         if my_requests != "0":
             """check if request already exists """
             is_exist = my_requests.get(self.title, "0")
@@ -91,5 +92,14 @@ class Request():
         return result
         
     @staticmethod
-    def get_by_id():
+    def get_by_id(user_id, request_id):
         """ get request by id"""
+        my_requests = requests.get(user_id, "0")
+        
+        if my_requests == "0":
+            return ("0")
+        for request_title, req_dets in my_requests.iteritems():
+            if req_dets[0] == request_id:
+                return ("1", request_title, req_dets)
+        return ("0")
+        

@@ -125,4 +125,24 @@ def create_app(config_name):
                 "updated_at": result[7]
             }), 200
 
+    @app.route('/api/v1/users/requests/<int:request_id>', methods=['GET'])
+    def get_request_by_id(request_id):
+        """ route to retrieve request by id """
+        result = Request().get_by_id(1, request_id)
+        
+        if result[0] == "0":
+            return jsonify({"message": "Request id not found."}), 404
+        response = jsonify({
+            "message":"Request id found.",
+            "request_id": result[2][0],
+            "title": result[1],
+            "description": result[2][1],
+            "status": result[2][4],
+            "user_id": result[2][3],
+            "type": result[2][2],
+            "created_at" : result[2][5]
+        })
+        return response, 200
+
+
     return app
