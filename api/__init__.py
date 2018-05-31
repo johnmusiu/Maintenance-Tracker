@@ -45,14 +45,20 @@ def create_app(config_name):
                 return response
             
             request_obj = Request(title, description, category)
-            result = request_obj.save(1)
+            results = request_obj.save(1)
             
-            if result[0] == "1":
+            if results[0] == "1":
+                result = results[1].get(title)
                 response = jsonify({
                     'message': "Maintenance request submitted successfully.",
+                    'request_id': result[0],
                     'title': title,
-                    'description': description,
-                    'category': category,
+                    'description': result[1],
+                    'type': result[2],
+                    'status': result[4],
+                    'user_id': result[3],
+                    'created_at': result[5],
+                    'updated_at': result[6],
                 })
                 response.status_code = 201
             else:
