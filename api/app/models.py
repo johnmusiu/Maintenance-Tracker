@@ -10,7 +10,7 @@ class Request():
     """ the requests model """
     user_requests = {}
 
-    def __init__(self, title, description, category):
+    def __init__(self, title=None, description=None, category=None):
         """initialize instance variables """
         self.title = title
         self.description = description
@@ -25,7 +25,7 @@ class Request():
         count = 0
         for user, user_requests in requests.iteritems():
             count += len(user_requests)
-        new_request = ({self.title: (self.description, self.category,user_id, 
+        new_request = ({self.title: (count+1, self.description, self.category,user_id, 
                                       self.status, self.created_at)})
         if my_requests != "0":
             """check if request already exists """
@@ -42,7 +42,20 @@ class Request():
     def get_all_my_requests(self, user_id):
         """ get my requests """
         my_requests = requests.get(user_id, "0")
-        return my_requests
+        if my_requests == "0":
+            return "0"
+        result = {}
+        for request_title, req_dets in my_requests.iteritems():
+            result[req_dets[0]] = {
+                "title": request_title,
+                "description": req_dets[1],
+                "type": req_dets[2],
+                "user_id": req_dets[3],
+                "status": req_dets[4],
+                "created_at": req_dets[5]
+            }
+
+        return ("1", result)
 
     def update(self):
         """ update request """
