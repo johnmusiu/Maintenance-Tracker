@@ -17,8 +17,9 @@ class TestAPIAuth(unittest.TestCase):
 
     def setUp(self):
         """ this is run before each test """
-        create_app.testing = True
-        self.app_client = create_app.test_client()
+        self.app = create_app(config_name="testing")
+        self.app_client = self.app.test_client()
+
         self.sample_user = {
             "name": "Bob Burgers",
             "email": "bob@example.com",
@@ -42,6 +43,7 @@ class TestAPIAuth(unittest.TestCase):
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(result["message"], "Login success, welcome!")
+
     def test_signin_incorrect_credentials(self):
         """
             Test API user signin with incorrect credentials
