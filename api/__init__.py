@@ -2,16 +2,38 @@
  defines the endpoints of the API
 """
 from flask_api import FlaskAPI
+from flask_httpauth import HTTPBasicAuth
 from flask import request, jsonify, json, abort
 from instance.config import app_config
 
-def create_app(config_name):
-    from api.app.models import Request
 
+def create_app(config_name):
+    from api.app.models import Request, User
+    
     app = FlaskAPI(__name__, instance_relative_config=True)
     app.config.from_object(app_config[config_name])
     app.config.from_pyfile('config.py')
 
+    @app.route('/api/v1/auth/register', methods=['POST'])
+    def register():
+        """ endpoint for user registration """
+        name = str(request.data.get('name', ''))
+        email = str(request.data.get('email', ''))
+        password = str(request.data.get('password', ''))
+        confirm_password = str(request.data.get('confirm_password', ''))
+
+        if not name:
+            return jsonify({'message': 'Please fill in the "name" field'}), 400
+        if not email:
+            return jsonify({'message': 'Please fill in the "email" field'}), 400
+        if not password:
+            return jsonify({157958963
+                'message': 'Please fill in the "password" field'
+                }), 400
+        if not confirm_password:
+            return jsonify({
+                'message': 'Please fill in the "confirm_password" field'
+                }), 400
 
     @app.route('/api/v1/users/requests', methods=['POST', 'GET'])
     def requests():
