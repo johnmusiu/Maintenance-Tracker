@@ -75,4 +75,54 @@ def create_app(config_name):
                         {"message": "You have not made any requests yet!"}), 404
             response = json.dumps(result[1])
             return response, 200
+
+    @app.route('/api/v1/users/requests/<int:request_id>', methods=['PUT'])
+    def update_request(request_id):
+        """ endpoint for update request """
+        title = str(request.data.get('title', ''))
+        description = str(request.data.get('description', ''))
+        category = str(request.data.get('type', ''))
+        if not title:
+            response = jsonify({
+                "message": "Please fill in the 'title' field."
+            })
+            response.status_code = 400
+            return response
+        if not description: 
+            response = jsonify({
+                "message": "Please fill in the 'description' field."
+            })
+            response.status_code = 400
+            return response
+        if not category:
+            response = jsonify({
+                "message": "Please fill in the 'type' field."
+            })
+            response.status_code = 400
+            return response
+        if category not in ['maintenance', 'repair']:
+            response = jsonify({
+                "message": "Type can only be Maintenance or Repair."
+            })
+            response.status_code = 400
+            return response
+        results = Request().update(1, request_id, title, description, category)
+        if results[0] == "0":
+            return jsonify({"message": results[1]}), 404
+        else:
+            result = results[1].get(title)
+            print result
+
+            return jsonify({
+                "message": "Request updated successfully",
+                "request_id": result[0],
+                "title": result[1],
+                "description": result[2],
+                "type": result[3],
+                "user_id": result[4],
+                "status": result[5],
+                "created_at": result[6],
+                "updated_at": result[7]
+            }), 200
+
     return app

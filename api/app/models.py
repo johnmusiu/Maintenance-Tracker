@@ -29,6 +29,7 @@ class Request():
         new_request = ({self.title: (count+1, self.description, self.category,
                                     user_id, self.status, self.created_at, 
                                     self.updated_at)})
+
         if my_requests != "0":
             """check if request already exists """
             is_exist = my_requests.get(self.title, "0")
@@ -59,12 +60,36 @@ class Request():
 
         return ("1", result)
 
-    def update(self):
+    def update(self, user_id, request_id, title, description, category):
         """ update request """
-        # for req in self.requests:
-        #     if req['title']
+        my_requests = requests.get(user_id, "0")
+        updated_at = time.strftime('%A %B, %d %Y %H:%M:%S')
 
-
+        if my_requests == "0":
+            result = ("0", "Request id not found.")
+        else:
+            for req_title, req_dets in my_requests.iteritems():
+                if req_dets[0] == request_id:
+                    update = ({title: (request_id, title, description, 
+                                        category, user_id, req_dets[4], 
+                                        req_dets[5], updated_at)})                                       
+                    #check if it doesnt duplicate another request
+                    matched_title = my_requests.get(title, "0")
+                    if matched_title == "0":
+                        my_requests.pop(req_title)
+                        my_requests.update(update)
+                        result = ("1", update)
+                    else: 
+                        if matched_title[0] == request_id:
+                            my_requests.pop(req_title)
+                            my_requests.update(update)
+                            result = ("1", update)
+                        else:
+                            result = ("0", "Duplicate entry, request not updated")
+                # else: 
+                #     result = ("0", "Request id not found")
+        return result
+        
     @staticmethod
     def get_by_id():
         """ get request by id"""
