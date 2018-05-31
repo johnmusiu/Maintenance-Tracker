@@ -8,7 +8,6 @@ requests = {}
 
 class Request():
     """ the requests model """
-    user_requests = {}
 
     def __init__(self, title, description, category):
         """initialize instance variables """
@@ -17,6 +16,7 @@ class Request():
         self.category = category
         self.status = "open"
         self.created_at = time.strftime('%A %B, %d %Y %H:%M:%S')
+        self.updated_at = self.created_at
     
     def save(self, user_id):
         """ save request """
@@ -25,8 +25,9 @@ class Request():
         count = 0
         for user, user_requests in requests.iteritems():
             count += len(user_requests)
-        new_request = ({self.title: (self.description, self.category,user_id, 
-                                      self.status, self.created_at)})
+        new_request = ({self.title: (count+1, self.description, self.category,
+                                    user_id, self.status, self.created_at, 
+                                    self.updated_at)})
         if my_requests != "0":
             """check if request already exists """
             is_exist = my_requests.get(self.title, "0")
