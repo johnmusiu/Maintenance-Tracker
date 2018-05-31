@@ -2,7 +2,7 @@
  defines the endpoints of the API
 """
 from flask_api import FlaskAPI
-from flask import request, jsonify, abort
+from flask import request, jsonify, json, abort
 from instance.config import app_config
 
 def create_app(config_name):
@@ -45,14 +45,20 @@ def create_app(config_name):
                 return response
             
             request_obj = Request(title, description, category)
-            result = request_obj.save(1)
+            results = request_obj.save(1)
             
-            if result[0] == "1":
+            if results[0] == "1":
+                result = results[1].get(title)
                 response = jsonify({
                     'message': "Maintenance request submitted successfully.",
+                    'request_id': result[0],
                     'title': title,
-                    'description': description,
-                    'category': category,
+                    'description': result[1],
+                    'type': result[2],
+                    'status': result[4],
+                    'user_id': result[3],
+                    'created_at': result[5],
+                    'updated_at': result[6],
                 })
                 response.status_code = 201
             else:
@@ -62,7 +68,13 @@ def create_app(config_name):
                 response.status_code = 202
             return response
         elif request.method == "GET":
-            return jsonify({"message": "get requests"}) 
+            #returns all requests made by a certain user
+            result = Request().get_all_my_requests(1)
+            if result == "0":
+                return jsonify(
+                        {"message": "You have not made any requests yet!"}), 404
+            response = json.dumps(result[1])
+            return response, 200
 
     @app.route('/api/v1/users/requests/<int:request_id>', methods=['PUT'])
     def update_request(request_id):
@@ -112,4 +124,5 @@ def create_app(config_name):
                 "created_at": result[6],
                 "updated_at": result[7]
             }), 200
+
     return app
