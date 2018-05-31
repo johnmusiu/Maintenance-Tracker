@@ -8,7 +8,6 @@ requests = {}
 
 class Request():
     """ the requests model """
-    user_requests = {}
 
     def __init__(self, title=None, description=None, category=None):
         """initialize instance variables """
@@ -17,6 +16,7 @@ class Request():
         self.category = category
         self.status = "open"
         self.created_at = time.strftime('%A %B, %d %Y %H:%M:%S')
+        self.updated_at = self.created_at
     
     def save(self, user_id):
         """ save request """
@@ -25,8 +25,12 @@ class Request():
         count = 0
         for user, user_requests in requests.iteritems():
             count += len(user_requests)
+
         new_request = ({self.title: (count+1, self.description, self.category,
-                                      user_id, self.status, self.created_at)})
+                                    user_id, self.status, self.created_at, 
+                                    self.updated_at)})
+
+
         if my_requests != "0":
             """check if request already exists """
             is_exist = my_requests.get(self.title, "0")
@@ -42,14 +46,51 @@ class Request():
     def get_all_my_requests(self, user_id):
         """ get my requests """
         my_requests = requests.get(user_id, "0")
-        return my_requests
+        if my_requests == "0":
+            return "0"
+        result = {}
+        for request_title, req_dets in my_requests.iteritems():
+            result[req_dets[0]] = {
+                "title": request_title,
+                "description": req_dets[1],
+                "type": req_dets[2],
+                "user_id": req_dets[3],
+                "status": req_dets[4],
+                "created_at": req_dets[5]
+            }
 
-    def update(self):
+        return ("1", result)
+
+    def update(self, user_id, request_id, title, description, category):
         """ update request """
-        # for req in self.requests:
-        #     if req['title']
+        my_requests = requests.get(user_id, "0")
+        updated_at = time.strftime('%A %B, %d %Y %H:%M:%S')
 
-
+        if my_requests == "0":
+            result = ("0", "Request id not found.")
+        else:
+            for req_title, req_dets in my_requests.iteritems():
+                if req_dets[0] == request_id:
+                    update = ({title: (request_id, title, description, 
+                                        category, user_id, req_dets[4], 
+                                        req_dets[5], updated_at)})                                       
+                    #check if it doesnt duplicate another request
+                    matched_title = my_requests.get(title, "0")
+                    if matched_title == "0":
+                        my_requests.pop(req_title)
+                        my_requests.update(update)
+                        result = ("1", update)
+                    else: 
+                        if matched_title[0] == request_id:
+                            my_requests.pop(req_title)
+                            my_requests.update(update)
+                            result = ("1", update)
+                        else:
+                            result = ("0", "Duplicate entry, request not updated")
+                # else: 
+                #     result = ("0", "Request id not found")
+        return result
+        
     @staticmethod
     def get_by_id(user_id, request_id):
         """ get request by id"""
