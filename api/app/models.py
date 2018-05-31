@@ -47,7 +47,8 @@ class Request():
     def update(self, user_id, request_id, title, description, category):
         """ update request """
         my_requests = requests.get(user_id, "0")
-        print my_requests
+        updated_at = time.strftime('%A %B, %d %Y %H:%M:%S')
+
         if my_requests == "0":
             result = ("0", "Request id not found.")
         else:
@@ -55,7 +56,7 @@ class Request():
                 if req_dets[0] == request_id:
                     update = ({title: (request_id, title, description, 
                                         category, user_id, req_dets[4], 
-                                        req_dets[5])})
+                                        req_dets[5], updated_at)})                                       
                     #check if it doesnt duplicate another request
                     matched_title = my_requests.get(title, "0")
                     if matched_title == "0":
