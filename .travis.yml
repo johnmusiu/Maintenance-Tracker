@@ -1,0 +1,12 @@
+language: python
+python:
+  - "2.7"
+# command(s) for installing dependencies
+install:
+  - pip install -r requirements.txt
+
+# command to run tests
+script: pytest
+
+after_success:
+  - coveralls
