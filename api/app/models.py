@@ -1,11 +1,36 @@
 """
     defines the data models of the app
 """
+import os
+from flask import current_app
 import time
+from datetime import datetime, timedelta
+from werkzeug.security import generate_password_hash, check_password_hash
 
 #initialize an empty requests list
 requests = {}
+users = {}
 
+class User():
+    """ the user model """
+    def __init__(self, name=None, email=None, password=None):
+        self.name = name
+        self.email = email
+        self.password = generate_password_hash(password)
+
+    def signup(self):
+        """ define method to create an account"""
+        #check if email taken
+        if users.get(self.email):
+            return ("0", "Email address already registered under another account")
+        count_users = len(users)
+        users[self.email] = (count_users+1, self.name, self.password)
+        return ("1", (count_users+1, self.email, self.name))
+    
+    def verify_password(self, password):
+        """ function to verify password hash """
+        return check_password_hash(self.password, password)
+        
 class Request():
     """ the requests model """
 
