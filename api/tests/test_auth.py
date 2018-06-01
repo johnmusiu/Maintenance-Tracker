@@ -23,7 +23,7 @@ class TestAPIAuth(unittest.TestCase):
         self.sample_user = {
             "name": "Bob Burgers",
             "email": "bob@example.com",
-            "password": "pass",
+            "password": "pass#@Ps",
         }
 
     # begin tests for api user signin
