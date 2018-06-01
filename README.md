@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/johnmusiu/Maintenance-Tracker.svg?branch=develop-api)](https://travis-ci.org/johnmusiu/Maintenance-Tracker)
 
+[![Coverage Status](https://coveralls.io/repos/github/johnmusiu/Maintenance-Tracker/badge.svg?branch=develop-api)](https://coveralls.io/github/johnmusiu/Maintenance-Tracker?branch=develop-api)
 
 Maintenance Tracker App is an application that gives users the ability to reach out to operations/repairs department regarding repair or maintenance requests and monitor the status of their request.
 
