@@ -1,7 +1,7 @@
 # Maintenance Tracker App
 
 [![Build Status](https://travis-ci.org/johnmusiu/Maintenance-Tracker.svg?branch=develop-api)](https://travis-ci.org/johnmusiu/Maintenance-Tracker) 
-[![Coverage Status](https://coveralls.io/repos/github/johnmusiu/Maintenance-Tracker/badge.svg?branch=develop-api)](https://coveralls.io/github/johnmusiu/Maintenance-Tracker?branch=develop-api)
+[![Coverage Status](https://coveralls.io/repos/github/johnmusiu/Maintenance-Tracker/badge.svg?branch=master)](https://coveralls.io/github/johnmusiu/Maintenance-Tracker?branch=master)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/4d649eb38dcc5e32f55d/test_coverage)](https://codeclimate.com/github/johnmusiu/Maintenance-Tracker/test_coverage)
 [![Maintainability](https://api.codeclimate.com/v1/badges/4d649eb38dcc5e32f55d/maintainability)](https://codeclimate.com/github/johnmusiu/Maintenance-Tracker/maintainability)
 
