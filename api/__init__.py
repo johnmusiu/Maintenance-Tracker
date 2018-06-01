@@ -5,7 +5,7 @@ from flask_api import FlaskAPI
 from flask_httpauth import HTTPBasicAuth
 from flask import request, jsonify, json, abort
 from instance.config import app_config
-
+import re
 
 def create_app(config_name):
     from api.app.models import Request, User
@@ -26,15 +26,43 @@ def create_app(config_name):
             return jsonify({'message': 'Please fill in the "name" field'}), 400
         if not email:
             return jsonify({'message': 'Please fill in the "email" field'}), 400
+        elif not re.match(r"(^[a-zA-Z_][a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z-.][a-zA-Z]+$)", email):
+            return jsonify({
+                'message': 'Please enter a valid email address'
+            }), 400
+
         if not password:
-            return jsonify({157958963
+            return jsonify({
                 'message': 'Please fill in the "password" field'
                 }), 400
+        elif not re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}", password):
+            return jsonify({
+                'message': 'Password must contain uppercase and lowercase letters, digits and be have min-lenght of 6'
+            })
         if not confirm_password:
             return jsonify({
                 'message': 'Please fill in the "confirm_password" field'
                 }), 400
+        if password != confirm_password:
+            return jsonify({
+                'message': 'Password and confirm password mismatch'
+            }), 400
+        # now save user to db
+        user = User(name, email, password)
+        result = user.signup()
+        if result[0] == "0":
+            return jsonify({
+                'message': result[1]
+            }), 400
+        
+        return jsonify({
+            'message': 'Registration successful',
+            'user_id': result[1][0],
+            'email': result[1][1],
+            'name': result[1][2]
+        })
 
+        return jsonify({'message': "New dudes"})
     @app.route('/api/v1/users/requests', methods=['POST', 'GET'])
     def requests():
         if request.method == "POST":
@@ -132,8 +160,7 @@ def create_app(config_name):
         if results[0] == "0":
             return jsonify({"message": results[1]}), 404
         else:
-            result = results[1].get(title)
-            print result
+            result = results[1]
 
             return jsonify({
                 "message": "Request updated successfully",
