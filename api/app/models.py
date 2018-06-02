@@ -71,10 +71,6 @@ class User():
             return 'Expired'
         except jwt.InvalidTokenError:
             return 'Invalid'
-
-        
-
-
                 
 class Request():
     """ the requests model """
@@ -94,13 +90,13 @@ class Request():
         #get my requests
         my_requests = self.requests.get(user_id, "0")
         count = 0
-        for user, user_requests in my_requests.iteritems():
-            count += len(user_requests)
+        if my_requests != "0":
+            for user, user_requests in my_requests.iteritems():
+                count += len(user_requests)
 
         new_request = ({self.title: (count+1, self.description, self.category,
                                     user_id, self.status, self.created_at, 
                                     self.updated_at)})
-
 
         if my_requests != "0":
             """check if request already exists """
@@ -120,7 +116,7 @@ class Request():
         if my_requests == "0":
             return "0"
         result = {}
-        for request_title, req_dets in my_requests.iteritems():
+        for request_title, req_dets in my_requests.items():
             result[req_dets[0]] = {
                 "title": request_title,
                 "description": req_dets[1],
@@ -129,7 +125,6 @@ class Request():
                 "status": req_dets[4],
                 "created_at": req_dets[5]
             }
-
         return ("1", result)
 
     def update(self, user_id, request_id, title, description, category):
@@ -140,7 +135,7 @@ class Request():
         if my_requests == "0":
             result = ("0", "Request id not found.")
         else:
-            for req_title, req_dets in my_requests.iteritems():
+            for req_title, req_dets in my_requests.items():
                 if req_dets[0] == request_id:
                     update = ({title: (request_id, title, description, 
                                         category, user_id, req_dets[4], 
@@ -168,7 +163,7 @@ class Request():
         
         if my_requests == "0":
             return ("0")
-        for request_title, req_dets in my_requests.iteritems():
+        for request_title, req_dets in my_requests.items():
             if req_dets[0] == request_id:
                 return ("1", request_title, req_dets)
         return ("0")

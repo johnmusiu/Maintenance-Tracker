@@ -3,10 +3,9 @@
 """
 from flask_api import FlaskAPI
 from flask_httpauth import HTTPBasicAuth
-from flask import request, jsonify, json, abort
+from flask import request, jsonify, json
 from instance.config import app_config
 import re
-import jwt
 
 def create_app(config_name):
     from api.app.models import Request, User
@@ -108,7 +107,6 @@ def create_app(config_name):
                     'message': "Wrong login credentials provided!"
                 }), 202
  
-
     @app.route('/api/v1/users/requests', methods=['POST', 'GET'])
     def requests():
         if request.method == "POST":
@@ -133,7 +131,7 @@ def create_app(config_name):
                 })
                 response.status_code = 400
                 return response
-            if category not in ['maintenance', 'repair']:
+            if category not in ['Maintenance', 'Repair']:
                 response = jsonify({
                     "message": "Type can only be Maintenance or Repair."
                 })
@@ -196,7 +194,7 @@ def create_app(config_name):
             })
             response.status_code = 400
             return response
-        if category not in ['maintenance', 'repair']:
+        if category not in ['Maintenance', 'Repair']:
             response = jsonify({
                 "message": "Type can only be Maintenance or Repair."
             })
@@ -207,9 +205,9 @@ def create_app(config_name):
             return jsonify({"message": results[1]}), 404
         else:
             result = results[1]
-
+            result = result.get(title)
             return jsonify({
-                "message": "Request updated successfully",
+                "message": "Maintenance request updated successfully.",
                 "request_id": result[0],
                 "title": result[1],
                 "description": result[2],
