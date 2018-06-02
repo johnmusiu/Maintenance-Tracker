@@ -9,11 +9,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 
 #initialize an empty requests list
-
+requests = {}
+users = {}
 
 class User():
     """ the user model """
-    users = {}
 
     def __init__(self, name=None, email=None, password=None):
         self.name = name
@@ -24,10 +24,10 @@ class User():
     def signup(self):
         """ define method to create an account"""
         #check if email taken
-        if self.users.get(self.email):
+        if users.get(self.email):
             return ("0", "Email address already registered under another account")
-        count_users = len(self.users)
-        self.users[self.email] = (count_users+1, self.name, self.password, self.email)
+        count_users = len(users)
+        users[self.email] = (count_users+1, self.name, self.password, self.email)
         return ("1", (count_users+1, self.email, self.name))
 
     def verify_password(self, password):
@@ -71,10 +71,13 @@ class User():
             return 'Expired'
         except jwt.InvalidTokenError:
             return 'Invalid'
+
+        
+
+
                 
 class Request():
     """ the requests model """
-    requests = {}
 
     def __init__(self, title=None, description=None, category=None):
         """initialize instance variables """
@@ -88,35 +91,35 @@ class Request():
     def save(self, user_id):
         """ save request """
         #get my requests
-        my_requests = self.requests.get(user_id, "0")
+        my_requests = requests.get(user_id, "0")
         count = 0
-        if my_requests != "0":
-            for user, user_requests in my_requests.iteritems():
-                count += len(user_requests)
+        for user, user_requests in my_requests.iteritems():
+            count += len(user_requests)
 
         new_request = ({self.title: (count+1, self.description, self.category,
                                     user_id, self.status, self.created_at, 
                                     self.updated_at)})
 
+
         if my_requests != "0":
             """check if request already exists """
             is_exist = my_requests.get(self.title, "0")
             if is_exist == "0":
-                self.requests[user_id].update(new_request)
+                requests[user_id].update(new_request)
                 return ("1", new_request)
             else: 
                 return ("0", "")
         else:
-            self.requests[user_id] = new_request
+            requests[user_id] = new_request
             return ("1", new_request)
 
     def get_all_my_requests(self, user_id):
         """ get my requests """
-        my_requests = self.requests.get(user_id, "0")
+        my_requests = requests.get(user_id, "0")
         if my_requests == "0":
             return "0"
         result = {}
-        for request_title, req_dets in my_requests.items():
+        for request_title, req_dets in my_requests.iteritems():
             result[req_dets[0]] = {
                 "title": request_title,
                 "description": req_dets[1],
@@ -125,17 +128,18 @@ class Request():
                 "status": req_dets[4],
                 "created_at": req_dets[5]
             }
+
         return ("1", result)
 
     def update(self, user_id, request_id, title, description, category):
         """ update request """
-        my_requests = self.requests.get(user_id, "0")
+        my_requests = requests.get(user_id, "0")
         updated_at = time.strftime('%A %B, %d %Y %H:%M:%S')
 
         if my_requests == "0":
             result = ("0", "Request id not found.")
         else:
-            for req_title, req_dets in my_requests.items():
+            for req_title, req_dets in my_requests.iteritems():
                 if req_dets[0] == request_id:
                     update = ({title: (request_id, title, description, 
                                         category, user_id, req_dets[4], 
@@ -157,13 +161,14 @@ class Request():
                 #     result = ("0", "Request id not found")
         return result
         
-    def get_by_id(self, user_id, request_id):
+    @staticmethod
+    def get_by_id(user_id, request_id):
         """ get request by id"""
-        my_requests = self.requests.get(user_id, "0")
+        my_requests = requests.get(user_id, "0")
         
         if my_requests == "0":
             return ("0")
-        for request_title, req_dets in my_requests.items():
+        for request_title, req_dets in my_requests.iteritems():
             if req_dets[0] == request_id:
                 return ("1", request_title, req_dets)
         return ("0")

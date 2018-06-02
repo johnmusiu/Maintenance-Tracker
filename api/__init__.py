@@ -3,12 +3,13 @@
 """
 from flask_api import FlaskAPI
 from flask_httpauth import HTTPBasicAuth
-from flask import request, jsonify, json
+from flask import request, jsonify, json, abort
 from instance.config import app_config
 import re
+import jwt
 
 def create_app(config_name):
-    from api.app.models import Request, User
+    from api.app.models import Request, User, users
     
     app = FlaskAPI(__name__, instance_relative_config=True)
     app.config.from_object(app_config[config_name])
@@ -23,31 +24,25 @@ def create_app(config_name):
         confirm_password = str(request.data.get('confirm_password', ''))
 
         if not name:
-            return jsonify({'message': 'Please fill in required name field!'}), 400
-        elif not name.replace(" ", "").isalpha():
-            return jsonify({
-                'message': "Please enter a valid name!",
-                'info': "A valid name has letters and spaces"
-            }), 400
+            return jsonify({'message': 'Please fill in the "name" field'}), 400
         if not email:
-            return jsonify({'message': 'Please fill in required email field!'}), 400
+            return jsonify({'message': 'Please fill in the "email" field'}), 400
         elif not re.match(r"(^[a-zA-Z_][a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z-.][a-zA-Z]+$)", email):
             return jsonify({
-                'message': 'Please enter a valid email address!'
+                'message': 'Please enter a valid email address'
             }), 400
 
         if not password:
             return jsonify({
-                'message': 'Please fill in required password field!'
+                'message': 'Please fill in the "password" field'
                 }), 400
         elif not re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}", password):
             return jsonify({
-                'message': 'Please enter a strong password to signup!',
-                'info': 'Password must contain uppercase and lowercase letters, digits and be have min-lenght of 6'
+                'message': 'Password must contain uppercase and lowercase letters, digits and be have min-lenght of 6'
             }), 400
         if not confirm_password:
             return jsonify({
-                'message': 'Please fill in required confirm_password field!'
+                'message': 'Please fill in the "confirm_password" field'
                 }), 400
         if password != confirm_password:
             return jsonify({
@@ -66,7 +61,7 @@ def create_app(config_name):
             'user_id': result[1][0],
             'email': result[1][1],
             'name': result[1][2]
-        }), 201
+        })
 
     @app.route('/api/v1/auth/login', methods=['POST'])
     def login():
@@ -89,17 +84,17 @@ def create_app(config_name):
             response.status_code = 400
             return response
         
-        user = User().users.get(email, False)
+        user = users.get(email, False)
         if user is False:
             return jsonify({
-                'message': "Wrong login credentials provided!"
-            }), 202
+                'message': "User account not found!"
+            })
         else:
             current_user = User(user[1], user[3], user[2])
             if current_user.verify_password(password):
                 token = current_user.generate_token(email)
                 return jsonify({
-                    'message': 'Login success, welcome!',
+                    'message': 'Login successful, welcome!',
                     'access_token': token.decode(),
                 }), 200
             else:
@@ -107,6 +102,7 @@ def create_app(config_name):
                     'message': "Wrong login credentials provided!"
                 }), 202
  
+
     @app.route('/api/v1/users/requests', methods=['POST', 'GET'])
     def requests():
         if request.method == "POST":
@@ -131,7 +127,7 @@ def create_app(config_name):
                 })
                 response.status_code = 400
                 return response
-            if category not in ['Maintenance', 'Repair']:
+            if category not in ['maintenance', 'repair']:
                 response = jsonify({
                     "message": "Type can only be Maintenance or Repair."
                 })
@@ -194,7 +190,7 @@ def create_app(config_name):
             })
             response.status_code = 400
             return response
-        if category not in ['Maintenance', 'Repair']:
+        if category not in ['maintenance', 'repair']:
             response = jsonify({
                 "message": "Type can only be Maintenance or Repair."
             })
@@ -205,9 +201,9 @@ def create_app(config_name):
             return jsonify({"message": results[1]}), 404
         else:
             result = results[1]
-            result = result.get(title)
+
             return jsonify({
-                "message": "Maintenance request updated successfully.",
+                "message": "Request updated successfully",
                 "request_id": result[0],
                 "title": result[1],
                 "description": result[2],
