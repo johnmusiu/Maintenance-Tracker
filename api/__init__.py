@@ -24,25 +24,31 @@ def create_app(config_name):
         confirm_password = str(request.data.get('confirm_password', ''))
 
         if not name:
-            return jsonify({'message': 'Please fill in the "name" field'}), 400
+            return jsonify({'message': 'Please fill in required name field!'}), 400
+        elif not name.replace(" ", "").isalpha():
+            return jsonify({
+                'message': "Please enter a valid name!",
+                'info': "A valid name has letters and spaces"
+            }), 400
         if not email:
-            return jsonify({'message': 'Please fill in the "email" field'}), 400
+            return jsonify({'message': 'Please fill in required email field!'}), 400
         elif not re.match(r"(^[a-zA-Z_][a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z-.][a-zA-Z]+$)", email):
             return jsonify({
-                'message': 'Please enter a valid email address'
+                'message': 'Please enter a valid email address!'
             }), 400
 
         if not password:
             return jsonify({
-                'message': 'Please fill in the "password" field'
+                'message': 'Please fill in required password field!'
                 }), 400
         elif not re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}", password):
             return jsonify({
-                'message': 'Password must contain uppercase and lowercase letters, digits and be have min-lenght of 6'
+                'message': 'Please enter a strong password to signup!',
+                'info': 'Password must contain uppercase and lowercase letters, digits and be have min-lenght of 6'
             }), 400
         if not confirm_password:
             return jsonify({
-                'message': 'Please fill in the "confirm_password" field'
+                'message': 'Please fill in required confirm_password field!'
                 }), 400
         if password != confirm_password:
             return jsonify({
