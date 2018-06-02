@@ -75,7 +75,7 @@ def create_app(config_name):
             return response
         elif not re.match(r"(^[a-zA-Z_][a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z-.][a-zA-Z]+$)", email):
             response =  jsonify({
-                'message': 'Please enter a valid email address'
+                'message': 'Please enter a valid email address!'
             })
             response.status_code = 400
             return response
@@ -92,11 +92,10 @@ def create_app(config_name):
         else:
             current_user = User(user[1], user[3], user[2])
             if current_user.verify_password(password):
-                token = current_user.generate_token(current_user.email)
+                token = current_user.generate_token(email)
                 return jsonify({
                     'message': 'Login successful, welcome!',
-                    # 'access_token': token.decode(),
-                    'email': email
+                    'access_token': token.decode(),
                 }), 200
             else:
                 return jsonify({

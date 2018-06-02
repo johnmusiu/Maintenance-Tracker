@@ -53,7 +53,7 @@ class User():
             }
             return jwt.encode(
                 payload,
-                os.getenv('SECRET_KEY'),
+                os.getenv('SECRET'),
                 algorithm='HS256'
             )
         except Exception as e:
