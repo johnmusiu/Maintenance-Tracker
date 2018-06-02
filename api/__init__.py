@@ -6,9 +6,10 @@ from flask_httpauth import HTTPBasicAuth
 from flask import request, jsonify, json, abort
 from instance.config import app_config
 import re
+import jwt
 
 def create_app(config_name):
-    from api.app.models import Request, User
+    from api.app.models import Request, User, users
     
     app = FlaskAPI(__name__, instance_relative_config=True)
     app.config.from_object(app_config[config_name])
@@ -38,7 +39,7 @@ def create_app(config_name):
         elif not re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}", password):
             return jsonify({
                 'message': 'Password must contain uppercase and lowercase letters, digits and be have min-lenght of 6'
-            })
+            }), 400
         if not confirm_password:
             return jsonify({
                 'message': 'Please fill in the "confirm_password" field'
@@ -62,7 +63,46 @@ def create_app(config_name):
             'name': result[1][2]
         })
 
-        return jsonify({'message': "New dudes"})
+    @app.route('/api/v1/auth/login', methods=['POST'])
+    def login():
+        """ define user login and token issuance """
+        email = str(request.data.get('email', ''))
+        password = str(request.data.get('password', ''))
+
+        if not email:
+            response = jsonify({'message': 'Please fill in the email field'})
+            response.status_code = 400
+            return response
+        elif not re.match(r"(^[a-zA-Z_][a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z-.][a-zA-Z]+$)", email):
+            response =  jsonify({
+                'message': 'Please enter a valid email address!'
+            })
+            response.status_code = 400
+            return response
+        if not password:
+            response = jsonify({'message': 'Please fill in the password field'})
+            response.status_code = 400
+            return response
+        
+        user = users.get(email, False)
+        if user is False:
+            return jsonify({
+                'message': "User account not found!"
+            })
+        else:
+            current_user = User(user[1], user[3], user[2])
+            if current_user.verify_password(password):
+                token = current_user.generate_token(email)
+                return jsonify({
+                    'message': 'Login successful, welcome!',
+                    'access_token': token.decode(),
+                }), 200
+            else:
+                return jsonify({
+                    'message': "Wrong login credentials provided!"
+                }), 202
+ 
+
     @app.route('/api/v1/users/requests', methods=['POST', 'GET'])
     def requests():
         if request.method == "POST":
