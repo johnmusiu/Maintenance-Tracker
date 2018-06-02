@@ -1,6 +1,6 @@
 # ignore the virtual environment
 venv/
-v-env/
+venv3.6/
 
 # ignore test related files
 __pycache__

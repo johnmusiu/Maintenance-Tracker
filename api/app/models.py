@@ -6,6 +6,7 @@ from flask import current_app
 import time
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
+import jwt
 
 #initialize an empty requests list
 requests = {}
@@ -13,10 +14,12 @@ users = {}
 
 class User():
     """ the user model """
+
     def __init__(self, name=None, email=None, password=None):
         self.name = name
         self.email = email
-        self.password = generate_password_hash(password)
+        # self.password = generate_password_hash(password)
+        self.password = password
 
     def signup(self):
         """ define method to create an account"""
@@ -24,13 +27,55 @@ class User():
         if users.get(self.email):
             return ("0", "Email address already registered under another account")
         count_users = len(users)
-        users[self.email] = (count_users+1, self.name, self.password)
+        users[self.email] = (count_users+1, self.name, self.password, self.email)
         return ("1", (count_users+1, self.email, self.name))
-    
+
     def verify_password(self, password):
         """ function to verify password hash """
-        return check_password_hash(self.password, password)
+        print(check_password_hash(self.password, password))
+        # return check_password_hash(self.password, password)
+        if password == self.password:
+            return True
+        else:
+            return False
+
+
+    def generate_token(self, email):
+        """
+            Generates the Auth Token for the currently logging in user
+            :returns: string
+        """
+        try:
+            payload = {
+                'exp': datetime.utcnow() + timedelta(minutes=60),
+                'iat': datetime.utcnow(),
+                'sub': email
+            }
+            return jwt.encode(
+                payload,
+                os.getenv('SECRET_KEY'),
+                algorithm='HS256'
+            )
+        except Exception as e:
+            return e
+
+    @staticmethod
+    def decode_token(token):
+        """
+        Decodes the auth token on user request to the app
+        """
+        try:
+            payload = jwt.decode(token, os.getenv('SECRET_KEY'))
+            return payload['sub']
+        except jwt.ExpiredSignatureError:
+            return 'Expired'
+        except jwt.InvalidTokenError:
+            return 'Invalid'
+
         
+
+
+                
 class Request():
     """ the requests model """
 
@@ -48,7 +93,7 @@ class Request():
         #get my requests
         my_requests = requests.get(user_id, "0")
         count = 0
-        for user, user_requests in requests.iteritems():
+        for user, user_requests in my_requests.iteritems():
             count += len(user_requests)
 
         new_request = ({self.title: (count+1, self.description, self.category,
