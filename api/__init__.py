@@ -9,7 +9,7 @@ import re
 import jwt
 
 def create_app(config_name):
-    from api.app.models import Request, User, users
+    from api.app.models import Request, User
     
     app = FlaskAPI(__name__, instance_relative_config=True)
     app.config.from_object(app_config[config_name])
@@ -61,7 +61,7 @@ def create_app(config_name):
             'user_id': result[1][0],
             'email': result[1][1],
             'name': result[1][2]
-        })
+        }), 201
 
     @app.route('/api/v1/auth/login', methods=['POST'])
     def login():
@@ -84,17 +84,17 @@ def create_app(config_name):
             response.status_code = 400
             return response
         
-        user = users.get(email, False)
+        user = User().users.get(email, False)
         if user is False:
             return jsonify({
-                'message': "User account not found!"
-            })
+                'message': "Wrong login credentials provided!"
+            }), 202
         else:
             current_user = User(user[1], user[3], user[2])
             if current_user.verify_password(password):
                 token = current_user.generate_token(email)
                 return jsonify({
-                    'message': 'Login successful, welcome!',
+                    'message': 'Login success, welcome!',
                     'access_token': token.decode(),
                 }), 200
             else:
