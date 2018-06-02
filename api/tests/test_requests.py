@@ -6,6 +6,7 @@ This module include tests to the different endpoints of the API
 import unittest
 import json
 from api import create_app
+from api.app.models import User, Request
 
 class TestAPIRequests(unittest.TestCase):
     """
@@ -23,18 +24,22 @@ class TestAPIRequests(unittest.TestCase):
         self.sample_user = {
             "name": "Bob Burgers",
             "email": "bob@example.com",
-            "password": "pass",
+            "password": "pass@#4W",
+            "confirm_password": "pass@#4W"
         }
 
         self.sample_request = {
             "title": "Fix mouses",
             "description": "mouses in lab 2 not working",
             "status": "ongoing",
-            "type": "maintenance",
+            "type": "Maintenance",
             "created_at": "",
             "completed_at": "",
             "user_id": 1
         }
+        
+        User().users.clear()
+        Request().requests.clear()
 
     # begin tests for api create request
     def test_api_can_create_request(self):
@@ -100,7 +105,7 @@ class TestAPIRequests(unittest.TestCase):
     # begin tests for api update request
     def test_api_can_update_request(self):
         """ test user can update a request that is not resolved """
-        response = self.app_client().put('/api/v1/users/requests', 
+        response = self.app_client().post('/api/v1/users/requests', 
                                 data=json.dumps(self.sample_request), 
                                 content_type='application/json')
         self.assertEqual(response.status_code, 201)
@@ -115,15 +120,14 @@ class TestAPIRequests(unittest.TestCase):
         result1 = json.loads(response1.data)
         self.assertEqual(result1["title"], "Fix mouses and keyboards")
         self.assertEqual(result1["message"], "Maintenance request updated successfully.")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response1.status_code, 200)
     
     def test_update_request_with_null_field(self):
         """ 
-            test whether null input raises error for fields
-            title/description/type
+            test whether null input raises error for fields title/description/type
         """
         #insert request
-        response = self.app_client().put('/api/v1/users/requests', 
+        response = self.app_client().post('/api/v1/users/requests', 
                                 data=json.dumps(self.sample_request), 
                                 content_type="application/json")
         result = json.loads(response.data)
@@ -131,7 +135,7 @@ class TestAPIRequests(unittest.TestCase):
 
         # test for null title
         self.sample_request['title'] = ""
-        response = self.app_client().put('/api/v1/users/requests', 
+        response = self.app_client().put('/api/v1/users/requests/1', 
                                     data=json.dumps(self.sample_request),
                                     content_type="application/json")
         result = json.loads(response.data)
@@ -141,7 +145,7 @@ class TestAPIRequests(unittest.TestCase):
         # test for null description
         self.sample_request['title'] = "Fix mouses"
         self.sample_request['description'] = ""
-        response = self.app_client().put('/api/v1/users/requests', 
+        response = self.app_client().put('/api/v1/users/requests/1', 
                                     data=json.dumps(self.sample_request),
                                     content_type="application/json")
         result = json.loads(response.data)
@@ -151,7 +155,7 @@ class TestAPIRequests(unittest.TestCase):
         # test for null request type
         self.sample_request['description'] = "mouses in lab 2 not working"
         self.sample_request['type'] = ""
-        response = self.app_client().put('/api/v1/users/requests', 
+        response = self.app_client().put('/api/v1/users/requests/1', 
                                     data=json.dumps(self.sample_request),
                                     content_type="application/json")
         result = json.loads(response.data)
@@ -192,7 +196,8 @@ class TestAPIRequests(unittest.TestCase):
                                 content_type='application/json')
         self.assertEqual(response.status_code, 201)
         result = json.loads(response.data)
-        response2 = self.app_client().get('/api/v1/users/requests/{}'.format(result["id"]),
+        response2 = self.app_client().get('/api/v1/users/requests/{}'.
+                                            format(result["request_id"]),
                                             data=json.dumps(self.sample_request),
                                             content_type='application/json')
         result2 = json.loads(response2.data)
@@ -222,12 +227,13 @@ class TestAPIRequests(unittest.TestCase):
         response = self.app_client().get('/api/v1/users/requests')
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Fix mouses", result)
+        self.assertIn("Fix mouses", str(result))
     # end tests for api get all requests
     
     def tearDown(self):
         """ teardown all initialized variables """
-        return True
+        Request().requests.clear()
+        User().users.clear()
 
 if __name__ == "__main__":
     unittest.main()

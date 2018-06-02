@@ -8,6 +8,7 @@ This module include tests to the auth endpoints of the API ie
 import unittest
 import json
 from api import create_app
+from api.app.models import User, Request
 
 
 class TestAPIAuth(unittest.TestCase):
@@ -23,14 +24,18 @@ class TestAPIAuth(unittest.TestCase):
         self.sample_user = {
             "name": "Bob Burgers",
             "email": "bob@example.com",
-            "password": "pass#@Ps",
+            "password": "pass1#Ps",
+            "confirm_password": "pass1#Ps"
         }
+        User().users.clear()
+        Request().requests.clear()
 
     # begin tests for api user signin
     def test_user_signin(self):
         """
             Test API user signin with correct credentials
         """
+
         response = self.app_client.post('/api/v1/auth/register', 
                                 data=json.dumps(self.sample_user), 
                                 content_type="application/json")
@@ -39,7 +44,6 @@ class TestAPIAuth(unittest.TestCase):
         response = self.app_client.post('/api/v1/auth/login',
                                 data=json.dumps(self.sample_user),
                                 content_type="application/json")
-        
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(result["message"], "Login success, welcome!")
@@ -52,11 +56,11 @@ class TestAPIAuth(unittest.TestCase):
                                 data=json.dumps(self.sample_user), 
                                 content_type="application/json")
         self.assertEqual(response.status_code, 201)
+
         self.sample_user['email'] = "not_his@gmail.com"
         response = self.app_client.post('/api/v1/auth/login',
                                 data=json.dumps(self.sample_user),
                                 content_type="application/json")
-        
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 202)
         self.assertEqual(result["message"], "Wrong login credentials provided!")
@@ -98,7 +102,7 @@ class TestAPIAuth(unittest.TestCase):
         """
             Test API user signup with all details provided correct
         """
-        response = self.app_client.post('/api/v1/auth/register/', 
+        response = self.app_client.post('/api/v1/auth/register', 
                                 data=json.dumps(self.sample_user), 
                                 content_type="application/json")
         result = json.loads(response.data)
@@ -110,79 +114,84 @@ class TestAPIAuth(unittest.TestCase):
         """ test user signup given email/name/password provided is null """
         #test with empty email
         self.sample_user['email'] = ""
-        response1 = self.app_client.post('/api/v1/auth/register/', 
+        response1 = self.app_client.post('/api/v1/auth/register', 
                                     data=json.dumps(self.sample_user),
                                     content_type="application/json")
         result1 = json.loads(response1.data)
-        self.assertEqual(result1["message"], "Please fill in required email field then try again!")
+        self.assertEqual(result1["message"], "Please fill in required email field!")
         self.assertEqual(response1.status_code, 400) 
 
         #test with empty name
         self.sample_user['email'] = "bob@example.com"
         self.sample_user['name'] = ""
-        response2 = self.app_client.post('/api/v1/auth/register/', 
+        response2 = self.app_client.post('/api/v1/auth/register', 
                                     data=json.dumps(self.sample_user),
                                     content_type="application/json")
         result2 = json.loads(response2.data)
-        self.assertEqual(result2["message"], "Please fill in required names field then try again!")
+        self.assertEqual(result2["message"], "Please fill in required name field!")
         self.assertEqual(response2.status_code, 400)  
 
-        #test with empty email
+        #test with empty password
         self.sample_user['name'] = "Bob Burgers"
-        self.sample_user['email'] = ""
-        response3 = self.app_client.post('/api/v1/auth/register/', 
+        self.sample_user['password'] = ""
+        response3 = self.app_client.post('/api/v1/auth/register', 
                                     data=json.dumps(self.sample_user),
                                     content_type="application/json")
         result3 = json.loads(response3.data)
-        self.assertEqual(result3["message"], "Please fill in required password field then try again!")
+        self.assertEqual(result3["message"], "Please fill in required password field!")
         self.assertEqual(response3.status_code, 400)        
 
     def test_signup_invalid_email(self):
         """ Test if user signup is done using an invalid email address"""
         self.sample_user['email'] = "bob@232"
-        response = self.app_client.post('/api/v1/auth/register/', 
+        response = self.app_client.post('/api/v1/auth/register', 
                                     data=json.dumps(self.sample_user),
                                     content_type="application/json")
         result = json.loads(response.data)
-        self.assertEqual(result["message"], "Please provide a valid email address!")
+        self.assertEqual(result["message"], "Please enter a valid email address!")
         self.assertEqual(response.status_code, 400)  
 
     def test_signup_invalid_fields(self):
         """ Test for non string input for name and email 
             A name cannot start with anything other than a letter
-            A name cannot contail alpha-numeric characters other than ' or -
+            A name cannot contail alpha-numeric characters
 
         """
         #test invalid name
         self.sample_user['name'] = "$Bob &Burgers"
-        response = self.app_client.post('/api/v1/auth/register/', 
+        response = self.app_client.post('/api/v1/auth/register', 
                                     data=json.dumps(self.sample_user),
                                     content_type="application/json")
         result = json.loads(response.data)
-        self.assertEqual(result["message"], "Please provide a valid name!")
+        self.assertEqual(result["message"], "Please enter a valid name!")
         self.assertEqual(response.status_code, 400) 
 
         #test invalid email
         self.sample_user['name'] = "Bob Burgers"
         self.sample_user['email'] = "1bob@example.com"
-        response = self.app_client.post('/api/v1/auth/register/', 
+        response = self.app_client.post('/api/v1/auth/register', 
                                     data=json.dumps(self.sample_user),
                                     content_type="application/json")
         result = json.loads(response.data)
-        self.assertEqual(result["message"], "Please provide a valid email address!")
+        self.assertEqual(result["message"], "Please enter a valid email address!")
         self.assertEqual(response.status_code, 400)  
     
     def test_signup_weak_password(self):
         """ test signup using a weak password """
         
         self.sample_user['password'] = "weakpasshere"
-        response = self.app_client.post('/api/v1/auth/register/', 
+        response = self.app_client.post('/api/v1/auth/register', 
                                     data=json.dumps(self.sample_user),
                                     content_type="application/json")
         result = json.loads(response.data)
         self.assertEqual(result["message"], "Please enter a strong password to signup!")
         self.assertEqual(response.status_code, 400) 
     # end tests for api user signup
+
+    def tearDown(self):
+        """ clear the data and variables set during testing """
+        Request().requests.clear()
+        User().users.clear()
 
 if __name__ == "__main__":
     unittest.main()
