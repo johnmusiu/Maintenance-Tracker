@@ -6,7 +6,7 @@ This module include tests to the different endpoints of the API
 import unittest
 import json
 from api import create_app
-from api.app.models import User, Request
+from api.models import User, Request
 
 class TestAPIRequests(unittest.TestCase):
     """
