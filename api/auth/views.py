@@ -36,21 +36,18 @@ def register():
 def register_validation(name, email, password, confirm_password):
     """ function to check if user fills in required data on sign up """
     response = True
-
+    # call login validate as it validates some similar fields
+    response = login_validation(email, password)
+    if response is not True:
+        return response
+        
     #check for null fields
-    if not name or not email or not password or not confirm_password:
+    if not name or not confirm_password:
         if not name:
             response = jsonify({
                 'message': 'Please fill in required name field!'
             })
-        if not email:
-            response = jsonify({
-                'message': 'Please fill in required email field!'
-            })
-        if not password:
-            response = jsonify({
-                'message': 'Please fill in required password field!'
-            })
+        
         if not confirm_password:
             response = jsonify({
                 'message': 'Please fill in required confirm_password field!'
@@ -64,13 +61,6 @@ def register_validation(name, email, password, confirm_password):
             response = jsonify({
                 'message': "Please enter a valid name!",
                 'info': "A valid name has only letters and spaces."
-            })
-    
-        if not re.match(
-                r"(^[a-zA-Z_][a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z-.][a-zA-Z]+$)",
-                email):
-            response = jsonify({
-                'message': 'Please enter a valid email address!'
             })
  
         if not re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}", password):
@@ -123,7 +113,7 @@ def login():
 def login_validation(email, password):
     """ method to validate login user provided data """
     if not email:
-        response = jsonify({'message': 'Please fill in the email field'})
+        response = jsonify({'message': 'Please fill in required email field!'})
         response.status_code = 400
         return response
     elif not re.match(r"(^[a-zA-Z_][a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z-.][a-zA-Z]+$)", email):
@@ -133,7 +123,7 @@ def login_validation(email, password):
         response.status_code = 400
         return response
     if not password:
-        response = jsonify({'message': 'Please fill in the password field'})
+        response = jsonify({'message': 'Please fill in required password field!'})
         response.status_code = 400
         return response
     
