@@ -11,31 +11,10 @@ def requests():
         title = str(request.data.get('title', ''))
         description = str(request.data.get('description', ''))
         category = str(request.data.get('type', ''))
-        if not title:
-            response = jsonify({
-                "message": "Please fill in the 'title' field."
-            })
-            response.status_code = 400
-            return response
-        if not description: 
-            response = jsonify({
-                "message": "Please fill in the 'description' field."
-            })
-            response.status_code = 400
-            return response
-        if not category:
-            response = jsonify({
-                "message": "Please fill in the 'type' field."
-            })
-            response.status_code = 400
-            return response
-        if category not in ['Maintenance', 'Repair']:
-            response = jsonify({
-                "message": "Type can only be Maintenance or Repair."
-            })
-            response.status_code = 400
-            return response
-        
+        #returns True if user input is valid and meets expectations
+        validation = validate_input(title, description, category)
+        if validation is not True:
+            return validation
         request_obj = Request(title, description, category)
         results = request_obj.save(1)
         
@@ -68,42 +47,53 @@ def requests():
         response = json.dumps(result[1])
         return response, 200
 
+def validate_input(title, description, category):
+    """ validate create or update request user input """
+    if not title or not description or not category:
+        if not title:
+            response = jsonify({
+                "message": "Please fill in the 'title' field."
+            })
+            
+        if not description: 
+            response = jsonify({
+                "message": "Please fill in the 'description' field."
+            })
+           
+        if not category:
+            response = jsonify({
+                "message": "Please fill in the 'type' field."
+            })
+        response.status_code = 400
+        return response
+    else:
+        if category not in ['Maintenance', 'Repair']:
+            response = jsonify({
+                "message": "Type can only be Maintenance or Repair."
+            })
+            response.status_code = 400
+            return response
+    return True
+
 @mrequests.route('/api/v1/users/requests/<int:request_id>', methods=['PUT'])
 def update_request(request_id):
     """ endpoint for update request """
     title = str(request.data.get('title', ''))
     description = str(request.data.get('description', ''))
     category = str(request.data.get('type', ''))
-    if not title:
-        response = jsonify({
-            "message": "Please fill in the 'title' field."
-        })
-        response.status_code = 400
-        return response
-    if not description: 
-        response = jsonify({
-            "message": "Please fill in the 'description' field."
-        })
-        response.status_code = 400
-        return response
-    if not category:
-        response = jsonify({
-            "message": "Please fill in the 'type' field."
-        })
-        response.status_code = 400
-        return response
-    if category not in ['Maintenance', 'Repair']:
-        response = jsonify({
-            "message": "Type can only be Maintenance or Repair."
-        })
-        response.status_code = 400
-        return response
+
+    # return True is user input is valid
+    validation = validate_input(title, description, category)
+    if validation is not True:
+        return validation
+
     results = Request().update(1, request_id, title, description, category)
     if results[0] == "0":
         return jsonify({"message": results[1]}), 404
     else:
         result = results[1]
         result = result.get(title)
+
         return jsonify({
             "message": "Maintenance request updated successfully.",
             "request_id": result[0],
@@ -123,6 +113,7 @@ def get_request_by_id(request_id):
     
     if result[0] == "0":
         return jsonify({"message": "Request id not found."}), 404
+        
     response = jsonify({
         "message":"Request id found.",
         "request_id": result[2][0],
