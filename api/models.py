@@ -8,18 +8,15 @@ from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 
-#initialize an empty requests list
-
-
 class User():
     """ the user model """
+    #initialize an empty users dict
     users = {}
 
     def __init__(self, name=None, email=None, password=None):
         self.name = name
         self.email = email
-        # self.password = generate_password_hash(password)
-        self.password = password
+        self.password = str(password)
 
     def signup(self):
         """ define method to create an account"""
@@ -27,18 +24,13 @@ class User():
         if self.users.get(self.email):
             return ("0", "Email address already registered under another account")
         count_users = len(self.users)
+        self.password = generate_password_hash(self.password)
         self.users[self.email] = (count_users+1, self.name, self.password, self.email)
         return ("1", (count_users+1, self.email, self.name))
 
     def verify_password(self, password):
         """ function to verify password hash """
-        print(check_password_hash(self.password, password))
-        # return check_password_hash(self.password, password)
-        if password == self.password:
-            return True
-        else:
-            return False
-
+        return check_password_hash((self.password), password)
 
     def generate_token(self, email):
         """

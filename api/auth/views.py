@@ -64,7 +64,6 @@ def login():
     """ define user login and token issuance """
     email = str(request.data.get('email', ''))
     password = str(request.data.get('password', ''))
-
     if not email:
         response = jsonify({'message': 'Please fill in the email field'})
         response.status_code = 400
@@ -79,8 +78,7 @@ def login():
         response = jsonify({'message': 'Please fill in the password field'})
         response.status_code = 400
         return response
-    
-    user = User().users.get(email, False)
+    user = User.users.get(email, False)
     if user is False:
         return jsonify({
             'message': "Wrong login credentials provided!"
