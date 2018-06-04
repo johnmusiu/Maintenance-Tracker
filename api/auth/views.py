@@ -93,6 +93,7 @@ def login():
         return validation
 
     user = User().users.get(email, False)
+
     if user is False:
         return jsonify({
             'message': "Wrong login credentials provided!"
