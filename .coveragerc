@@ -5,4 +5,5 @@ omit =
     *site-packages/nose/*
     *__init__*
     *tests/*
-    *venv*
+    *venv/
+    *venv3.6/
