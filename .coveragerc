@@ -1,7 +1,4 @@
-[run]
-branch = True
-source = __Maintenance-Tracker__
-
+[report]
 omit =
     */python?.?/*
     *site-packages/*
