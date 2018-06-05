@@ -2,6 +2,6 @@
 
 from flask import Blueprint
 
-mrequests = Blueprint('mrequests', __name__)
+mrequests = Blueprint('mrequests', __name__, url_prefix='/api/v1/users/requests')
 
 from . import views

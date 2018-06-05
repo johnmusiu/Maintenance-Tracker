@@ -5,7 +5,7 @@ from flask import request, jsonify, json
 from api.models import User, Request
 import re
 
-@auth.route('/api/v1/auth/register', methods=['POST'])
+@auth.route('/register', methods=['POST'])
 def register():
     """ endpoint for user registration """
     name = str(request.data.get('name', ''))
@@ -59,7 +59,7 @@ def register():
         'name': result[1][2]
     }), 201
 
-@auth.route('/api/v1/auth/login', methods=['POST'])
+@auth.route('/login', methods=['POST'])
 def login():
     """ define user login and token issuance """
     email = str(request.data.get('email', ''))

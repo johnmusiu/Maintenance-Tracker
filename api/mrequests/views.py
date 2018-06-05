@@ -5,7 +5,7 @@ from flask import request, jsonify, json
 from api.models import User, Request
 import re
 
-@mrequests.route('/api/v1/users/requests', methods=['POST', 'GET'])
+@mrequests.route('/', methods=['POST', 'GET'])
 def requests():
     if request.method == "POST":
         title = str(request.data.get('title', ''))
@@ -68,7 +68,7 @@ def requests():
         response = json.dumps(result[1])
         return response, 200
 
-@mrequests.route('/api/v1/users/requests/<int:request_id>', methods=['PUT'])
+@mrequests.route('/<int:request_id>', methods=['PUT'])
 def update_request(request_id):
     """ endpoint for update request """
     title = str(request.data.get('title', ''))
@@ -116,7 +116,7 @@ def update_request(request_id):
             "updated_at": result[7]
         }), 200
 
-@mrequests.route('/api/v1/users/requests/<int:request_id>', methods=['GET'])
+@mrequests.route('/<int:request_id>', methods=['GET'])
 def get_request_by_id(request_id):
     """ route to retrieve request by id """
     result = Request().get_by_id(1, request_id)
