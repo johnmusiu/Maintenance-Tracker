@@ -6,6 +6,10 @@ python:
 install:
   - pip install -r requirements.txt
 
+before_script: 
+  - "psql -c 'create database db_test;' -U postgres"
+  - python migration.py
+
 script:
   - nosetests --exe -v
   - nosetests --exe --with-coverage --cover-package=api
