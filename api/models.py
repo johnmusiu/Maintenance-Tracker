@@ -7,6 +7,7 @@ import time
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
+from .db_connect import DBConnect
 
 class User():
     """ the user model """
