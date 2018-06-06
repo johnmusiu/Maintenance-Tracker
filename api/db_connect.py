@@ -2,24 +2,20 @@
     module to initialize db connections 
     and close them
 """
+import os
 import psycopg2
-from .secret import DB_USER, DB_PASSWORD
-from instance.config import app_config
 
 class DBConnect():
     def __init__(self):
         """initialize db instance"""
-        self.conn = ""
-        self.cursor = ""
 
     def connect(self):
         """ create a db conn object """
-        db_name = app_config['development'].DB_NAME
         try:
-            self.conn = psycopg2.connect(dbname=db_name, 
-                                          user=DB_USER, 
+            self.conn = psycopg2.connect(dbname=os.getenv("DB_NAME"), 
+                                          user=os.getenv("DB_USER"), 
                                           host='localhost', 
-                                          password=DB_PASSWORD)
+                                          password=os.getenv("DB_PASSWORD"))
             self.cursor = self.conn.cursor()
             return self.cursor
         except:
