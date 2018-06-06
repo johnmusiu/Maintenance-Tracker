@@ -3,7 +3,7 @@
     and close them
 """
 import psycopg2
-from instance.secret import DB_USER, DB_PASSWORD
+from .secret import DB_USER, DB_PASSWORD
 from instance.config import app_config
 
 class DBConnect():
@@ -29,5 +29,3 @@ class DBConnect():
         """ close cursor and db connection """
         self.cursor.close()
         self.conn.close()
-
-print(app_config['development'].DB_NAME)
