@@ -9,20 +9,28 @@ class Config(object):
 class DevelopmentConfig(Config):
     """ Development time config"""
     DEBUG = True
+    DB_NAME = 'todos'
+    DB_NAME = 'db_live'
+
+
 
 class TestingConfig(Config):
     """ Testing time config """
     TESTING = True
     DEBUG = True
+    DB_NAME = 'db_test'
 
 class StagingConfig(Config):
     """ Staging time config"""
     DEBUG = True
+    DB_NAME = 'db_live'
+
 
 class ProductionConfig(Config):
     """ Production environment config """
     DEBUG = False
     TESTING = False
+    DB_NAME = 'db_live'
 
 app_config = {
     'development': DevelopmentConfig,
