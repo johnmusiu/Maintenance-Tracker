@@ -1,6 +1,6 @@
-""" defines db migrations
-
-    create DB, create tables
+""" 
+    defines db migrations
+    create tables
 """
 import os
 from api.db_connect import DBConnect
@@ -10,17 +10,16 @@ def migration():
         db = DBConnect()
         cursor= db.connect()
 
-        if cursor is not False:
-            #drop db if exists
-            # cursor.execute("DROP DATABASE IF EXISTS "+ os.getenv('DB_NAME'))
-            
-            #create db
-            # cursor.execute("CREATE DATABASE "+ os.getenv('DB_NAME'))
-            
+        if cursor is not False:            
             #drop tables if they exist
             cursor.execute("DROP TABLE IF EXISTS users;")
             cursor.execute("DROP TABLE IF EXISTS requests;")
-            
+            # drop enum types
+            cursor.execute("DROP TYPE IF EXISTS is_admin")
+            cursor.execute("DROP TYPE IF EXISTS status")
+            cursor.execute("DROP TYPE IF EXISTS req_type")
+
+
             #create table user sql statement
             cursor.execute("CREATE TYPE is_admin AS ENUM('0', '1');")
             create_users = """CREATE TABLE users( 
@@ -48,15 +47,17 @@ def migration():
                                     created_at TIMESTAMP,
                                     updated_at TIMESTAMP,
                                     resolved_at TIMESTAMP
-                            ); """
+                            );"""
 
             cursor.execute(create_users)
             cursor.execute(create_requests)
+            # persist the tables
+            db.conn.commit()
             print("Migrations done successfully!")
             db.close_conn()
             return True
-    except:
-        print("Error migrating tables")
+    except Exception as ex:
+        print(ex)
         return False
 
 
