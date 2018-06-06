@@ -7,7 +7,8 @@ from api.db_connect import DBConnect
 
 def migration():
     try:
-        cursor = DBConnect().connect()
+        db = DBConnect()
+        cursor= db.connect()
 
         if cursor is not False:
             #drop db if exists
@@ -52,6 +53,7 @@ def migration():
             cursor.execute(create_users)
             cursor.execute(create_requests)
             print("Migrations done successfully!")
+            db.close_conn()
             return True
     except:
         print("Error migrating tables")
