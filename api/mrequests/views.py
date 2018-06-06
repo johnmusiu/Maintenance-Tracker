@@ -1,23 +1,56 @@
-#api/requests/views.py
+# api/requests/views.py
 
 from . import mrequests
 from flask import request, jsonify, json
-from api.models import User, Request
-import re
+from api.models import Request
+from functools import wraps
+import jwt
+import os
+
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = request.headers.get('token', '')
+        print(token)
+        if not token:
+            return jsonify({
+                'message': 'Token is missing! Login to get token.'
+            }), 401
+
+        try:
+            data = jwt.decode(token, os.getenv('SECRET'))
+            ({'data': data})
+            # if data['username'] in []:
+
+            # else:
+        except Exception as e:
+            print(e.args)
+            return jsonify({'message': 'Token is invalid!'}), 403
+
+        return f(*args, **kwargs)
+
+    return decorated
+
+
+def role_required(f):
+    return True
+
 
 @mrequests.route('/requests', methods=['POST', 'GET'])
+@token_required
 def requests():
     if request.method == "POST":
         title = str(request.data.get('title', ''))
         description = str(request.data.get('description', ''))
         category = str(request.data.get('type', ''))
-        #returns True if user input is valid and meets expectations
+        # returns True if user input is valid and meets expectations
         validation = validate_input(title, description, category)
         if validation is not True:
             return validation
         request_obj = Request(title, description, category)
         results = request_obj.save(1)
-        
+
         if results[0] == "1":
             result = results[1].get(title)
             response = jsonify({
@@ -39,13 +72,14 @@ def requests():
             response.status_code = 202
         return response
     elif request.method == "GET":
-        #returns all requests made by a certain user
+        # returns all requests made by a certain user
         result = Request().get_all_my_requests(1)
         if result == "0":
             return jsonify(
-                    {"message": "You have not made any requests yet!"}), 404
+                {"message": "You have not made any requests yet!"}), 404
         response = json.dumps(result[1])
         return response, 200
+
 
 def validate_input(title, description, category):
     """ validate create or update request user input """
@@ -54,12 +88,12 @@ def validate_input(title, description, category):
             response = jsonify({
                 "message": "Please fill in the 'title' field."
             })
-            
-        if not description: 
+
+        if not description:
             response = jsonify({
                 "message": "Please fill in the 'description' field."
             })
-           
+
         if not category:
             response = jsonify({
                 "message": "Please fill in the 'type' field."
@@ -75,7 +109,9 @@ def validate_input(title, description, category):
             return response
     return True
 
+
 @mrequests.route('/requests/<int:request_id>', methods=['PUT'])
+@token_required
 def update_request(request_id):
     """ endpoint for update request """
     title = str(request.data.get('title', ''))
@@ -106,22 +142,24 @@ def update_request(request_id):
             "updated_at": result[7]
         }), 200
 
+
 @mrequests.route('/requests/<int:request_id>', methods=['GET'])
+@token_required
 def get_request_by_id(request_id):
     """ route to retrieve request by id """
     result = Request().get_by_id(1, request_id)
-    
+
     if result[0] == "0":
         return jsonify({"message": "Request id not found."}), 404
-        
+
     response = jsonify({
-        "message":"Request id found.",
+        "message": "Request id found.",
         "request_id": result[2][0],
         "title": result[1],
         "description": result[2][1],
         "status": result[2][4],
         "user_id": result[2][3],
         "type": result[2][2],
-        "created_at" : result[2][5]
+        "created_at": result[2][5]
     })
     return response, 200
