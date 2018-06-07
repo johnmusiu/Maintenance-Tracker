@@ -34,8 +34,9 @@ def migration():
                             );"""
 
             #create table requests sql statement
-            cursor.execute("CREATE TYPE status AS ENUM('unresolved', 'ongoing', 'resolved');")
-            cursor.execute("CREATE TYPE req_type AS ENUM('repair', 'maintenance');")
+            cursor.execute("""CREATE TYPE status AS ENUM('open', 'unapproved',
+                            'pending', 'resolved');""")
+            cursor.execute("CREATE TYPE req_type AS ENUM('Repair', 'Maintenance');")
             create_requests = """CREATE TABLE requests(
                                     request_id SERIAL PRIMARY KEY,
                                     user_id INT,
@@ -50,10 +51,10 @@ def migration():
                             );"""
 
             cursor.execute(create_users)
+            db.conn.commit()
             cursor.execute(create_requests)
             # persist the tables
             db.conn.commit()
-            print("Migrations done successfully!")
             db.close_conn()
             return True
     except Exception as ex:

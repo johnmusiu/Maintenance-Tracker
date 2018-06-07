@@ -1,7 +1,8 @@
 # api/requests/views.py
 
 from . import mrequests
-from flask import request, jsonify, json
+from flask import request, jsonify, json, session
+from api.models import Request
 from api.models import Request
 from functools import wraps
 import jwt
@@ -11,21 +12,18 @@ import os
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        token = request.headers.get('token', '')
-        print(token)
+        token = request.headers.get('access-token', '')
         if not token:
             return jsonify({
                 'message': 'Token is missing! Login to get token.'
             }), 401
 
         try:
-            data = jwt.decode(token, os.getenv('SECRET'))
-            ({'data': data})
-            # if data['username'] in []:
+            data = jwt.decode(token, os.getenv('SECRET_KEY'))
+            session['user_id'] = data.get('user_id')
+            session['role'] = data.get('role')
 
-            # else:
         except Exception as e:
-            print(e.args)
             return jsonify({'message': 'Token is invalid!'}), 403
 
         return f(*args, **kwargs)
@@ -48,36 +46,30 @@ def requests():
         validation = validate_input(title, description, category)
         if validation is not True:
             return validation
-        request_obj = Request(title, description, category)
-        results = request_obj.save(1)
-
-        if results[0] == "1":
-            result = results[1].get(title)
+        result = Request().save(session['user_id'], category, title, description)
+            
+        if result[0] is False:
+            response = jsonify({
+                'message': result[1]
+            })
+        else:     
             response = jsonify({
                 'message': "Maintenance request submitted successfully.",
-                'request_id': result[0],
-                'title': title,
-                'description': result[1],
-                'type': result[2],
-                'status': result[4],
-                'user_id': result[3],
-                'created_at': result[5],
-                'updated_at': result[6],
+                'request_id': result[1][0],
+                'title': result[1][1],
+                'description': description,
+                'type': type,
+                'status': 'open'
             })
             response.status_code = 201
-        else:
-            response = jsonify({
-                "message": "Duplicate request, request not saved"
-            })
-            response.status_code = 202
         return response
     elif request.method == "GET":
         # returns all requests made by a certain user
-        result = Request().get_all_my_requests(1)
-        if result == "0":
+        result = Request().get_all_my_requests(session['user_id'])
+        if result is False:
             return jsonify(
                 {"message": "You have not made any requests yet!"}), 404
-        response = json.dumps(result[1])
+        response = jsonify(result)
         return response, 200
 
 
@@ -123,43 +115,31 @@ def update_request(request_id):
     if validation is not True:
         return validation
 
-    results = Request().update(1, request_id, title, description, category)
-    if results[0] == "0":
-        return jsonify({"message": results[1]}), 404
-    else:
-        result = results[1]
-        result = result.get(title)
-
-        return jsonify({
-            "message": "Maintenance request updated successfully.",
-            "request_id": result[0],
-            "title": result[1],
-            "description": result[2],
-            "type": result[3],
-            "user_id": result[4],
-            "status": result[5],
-            "created_at": result[6],
-            "updated_at": result[7]
-        }), 200
+    results = Request().update(session['user_id'], request_id, title, 
+        description, category)
+        
+    if results[0] is False:
+        return jsonify({"message": results[1]}), results[2]
+    
+    return jsonify({
+        "message": "Maintenance request updated successfully.",
+        "request_id": request_id,
+        "title": title,
+        "description": description,
+        "type": category,
+        "user_id": session['user_id'],
+        "status": 'open'
+    }), 200
 
 
 @mrequests.route('/requests/<int:request_id>', methods=['GET'])
 @token_required
 def get_request_by_id(request_id):
     """ route to retrieve request by id """
-    result = Request().get_by_id(1, request_id)
-
-    if result[0] == "0":
-        return jsonify({"message": "Request id not found."}), 404
-
-    response = jsonify({
-        "message": "Request id found.",
-        "request_id": result[2][0],
-        "title": result[1],
-        "description": result[2][1],
-        "status": result[2][4],
-        "user_id": result[2][3],
-        "type": result[2][2],
-        "created_at": result[2][5]
-    })
+    # returns all requests made by a certain user
+    result = Request().get_by_id(request_id)
+    if result[0] is False:
+        return jsonify(
+            {"message": result[1]}), result[2]
+    response = jsonify(result[1])
     return response, 200
