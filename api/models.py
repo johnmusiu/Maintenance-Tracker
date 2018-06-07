@@ -2,13 +2,13 @@
     defines the data models of the app
 """
 import os
-import time
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from flask import session
-from .db_helper import json_fetch_all, json_fetch_one, execute_query, fetch_one
+from .db_helper import execute_query, fetch_one
 from .db_connect import DBConnect
+
 
 class User():
     """ the user model methods"""
@@ -20,7 +20,7 @@ class User():
 
     def signup(self, fname, lname, email, password):
         """ define method to create an account"""
-        try:  
+        try:
             db = DBConnect()
             cursor = db.connect()
             # check if email taken
@@ -28,9 +28,10 @@ class User():
             user = cursor.fetchone()
             if not user:
                 password = generate_password_hash(password)
-                cursor.execute("INSERT INTO users(first_name, last_name,\
-                            email, password, is_admin) VALUES(%s, %s, %s, %s, '0');",
-                            (fname, lname, email, password))
+                cursor.execute(u"INSERT INTO users(first_name, last_name,\
+                            email, password, is_admin) \
+                            VALUES(%s, %s, %s, %s, '0');",
+                               (fname, lname, email, password))
                 db.conn.commit()
                 result = (True, email, fname, lname)
             else:
@@ -44,7 +45,7 @@ class User():
 
     def signin(self, email, password):
         """ function to verify user details on login """
-        try:  
+        try:
             db = DBConnect()
             cursor = db.connect()
             cursor.execute("SELECT * FROM users where email = %s;", (email,))
@@ -53,14 +54,13 @@ class User():
                 return False
             else:
                 if check_password_hash(user[4], password):
-                    result = ({'id':user[0], 'is_admin':user[7]})
+                    result = ({'id': user[0], 'is_admin': user[7]})
                 else:
                     result = False
         except Exception as ex:
             print(ex)
             result = False
         return result
-
 
     def generate_token(self, email, is_admin, user_id):
         """
@@ -100,21 +100,22 @@ class Request():
         try:
             cursor.execute(u"SELECT * FROM requests where user_id = %s and \
                             title = %s and (status = 'pending' \
-                            or status = 'open') and type = %s;", 
-                            (user_id, title, category,))
+                            or status = 'open') and type = %s;",
+                           (user_id, title, category,))
             requests = cursor.fetchone()
         except Exception as e:
             print(e)
         try:
             if requests:
-                result = (False, "Request already exists, wait for resolution!")
-            else:                     
+                result = (False,
+                          "Request already exists, wait for resolution!")
+            else:
                 cursor.execute(u"INSERT INTO requests(user_id, type, title,\
                             description, created_at, updated_at, status)\
                            VALUES(%s, %s, %s, %s, current_timestamp, \
                            current_timestamp, 'open') \
                            RETURNING (request_id, title);",
-                           (user_id, category, title, description,))
+                               (user_id, category, title, description,))
                 db.conn.commit()
                 res = cursor.fetchone()
                 result = (True, res)
@@ -130,8 +131,8 @@ class Request():
         cursor = db.connect()
         # check if email taken
         try:
-            cursor.execute("SELECT * FROM requests where user_id = %s;", 
-                (user_id,))
+            cursor.execute("SELECT * FROM requests where user_id = %s;",
+                           (user_id,))
             requests = cursor.fetchall()
 
             if not requests:
@@ -156,7 +157,7 @@ class Request():
     def update(self, user_id, request_id, title, description, category):
         """ update request """
         try:
-            #check if request exists
+            # check if request exists
             sql = u"SELECT * FROM requests where request_id = %s;"
             values = (request_id,)
             res = fetch_one(sql, values)
@@ -164,9 +165,11 @@ class Request():
                 result = (False, "This request does not exist!", 404)
             else:
                 if res[1] != session['user_id']:
-                    result = (False, "You can only update your own requests", 401)
+                    result = (
+                        False, "You can only update your own requests", 401)
                 elif res[3] != 'open':
-                    result = (False, "Editing this request is not allowed", 403)
+                    result = (
+                        False, "Editing this request is not allowed", 403)
                 else:
                     sql = u"UPDATE requests SET title=%s, description=%s,\
                             type=%s, updated_at=current_timestamp \
@@ -180,7 +183,7 @@ class Request():
 
     def get_by_id(self, request_id):
         """ get request by id"""
-        #check if request exists
+        # check if request exists
         sql = u"SELECT * FROM requests WHERE request_id = %s AND user_id = %s;"
         values = (request_id, session['user_id'],)
         request = fetch_one(sql, values)

@@ -1,6 +1,5 @@
 """ this module contains DB helper methods for db query methods"""
 from flask import json
-import psycopg2
 from .db_connect import DBConnect
 
 
@@ -15,6 +14,7 @@ def execute_query(query, values):
         print(ex)
         return False
 
+
 def json_fetch_all(query, values):
     """ retrieve db data in json"""
     try:
@@ -27,6 +27,7 @@ def json_fetch_all(query, values):
         print(ex)
         return False
 
+
 def json_fetch_one(query, values):
     """ retrieve one db data result in json"""
     try:
@@ -38,6 +39,7 @@ def json_fetch_one(query, values):
     except Exception as ex:
         print(ex)
         return False
+
 
 def fetch_one(query, values):
     """ retrieve one db data result"""

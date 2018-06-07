@@ -1,9 +1,10 @@
 """
-    module to initialize db connections 
+    module to initialize db connections
     and close them
 """
 import os
 import psycopg2
+
 
 class DBConnect():
     def __init__(self):
@@ -12,13 +13,13 @@ class DBConnect():
     def connect(self):
         """ create a db conn object """
         try:
-            self.conn = psycopg2.connect(dbname=os.getenv("DB_NAME"), 
-                                          user=os.getenv("DB_USER"), 
-                                          host='localhost', 
-                                          password=os.getenv("DB_PASSWORD"))
+            self.conn = psycopg2.connect(dbname=os.getenv("DB_NAME"),
+                                         user=os.getenv("DB_USER"),
+                                         host='localhost',
+                                         password=os.getenv("DB_PASSWORD"))
             self.cursor = self.conn.cursor()
             return self.cursor
-        except:
+        except Exception:
             return False
 
     def close_conn(self):

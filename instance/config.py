@@ -1,10 +1,12 @@
 import os
 
+
 class Config(object):
     """ base config class """
     DEBUG = False
     CSRF_ENABLED = True
     SECRET = os.getenv('SECRET')
+
 
 class DevelopmentConfig(Config):
     """ Development time config"""
@@ -13,12 +15,12 @@ class DevelopmentConfig(Config):
     DB_NAME = os.getenv('DB_NAME')
 
 
-
 class TestingConfig(Config):
     """ Testing time config """
     TESTING = True
     DEBUG = True
     DB_NAME = os.getenv('DB_NAME')
+
 
 class StagingConfig(Config):
     """ Staging time config"""
@@ -31,6 +33,7 @@ class ProductionConfig(Config):
     DEBUG = False
     TESTING = False
     DB_NAME = os.getenv('DB_NAME')
+
 
 app_config = {
     'development': DevelopmentConfig,
