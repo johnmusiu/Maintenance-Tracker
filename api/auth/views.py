@@ -23,16 +23,16 @@ def register():
 
     # now save user to db
     result = User().signup(fname, lname, email, password)
-    
+
     if result[0] is False:
         return jsonify({
             'message': result[1]
         }), 409
-    
+
     return jsonify({
         'message': 'Registration successfull',
         'email': result[1],
-        'name': result[2]+ " " + result[3],
+        'name': result[2] + " " + result[3],
     }), 201
 
 
@@ -117,7 +117,6 @@ def login():
             'message': 'Login success, welcome!',
             'access-token': token.decode(),
         }), 200
-        
 
 
 def login_validation(email, password):

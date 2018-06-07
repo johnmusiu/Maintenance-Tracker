@@ -1,17 +1,17 @@
-""" 
+"""
     defines db migrations
     create tables
 """
-import os
 from api.db_connect import DBConnect
+
 
 def migration():
     try:
         db = DBConnect()
-        cursor= db.connect()
+        cursor = db.connect()
 
-        if cursor is not False:            
-            #drop tables if they exist
+        if cursor is not False:
+            # drop tables if they exist
             cursor.execute("DROP TABLE IF EXISTS users;")
             cursor.execute("DROP TABLE IF EXISTS requests;")
             # drop enum types
@@ -19,10 +19,9 @@ def migration():
             cursor.execute("DROP TYPE IF EXISTS status")
             cursor.execute("DROP TYPE IF EXISTS req_type")
 
-
-            #create table user sql statement
+            # create table user sql statement
             cursor.execute("CREATE TYPE is_admin AS ENUM('0', '1');")
-            create_users = """CREATE TABLE users( 
+            create_users = """CREATE TABLE users(
                                     user_id SERIAL PRIMARY KEY,
                                     first_name VARCHAR(25),
                                     last_name  VARCHAR(25),
@@ -33,10 +32,11 @@ def migration():
                                     is_admin is_admin
                             );"""
 
-            #create table requests sql statement
+            # create table requests sql statement
             cursor.execute("""CREATE TYPE status AS ENUM('open', 'unapproved',
                             'pending', 'resolved');""")
-            cursor.execute("CREATE TYPE req_type AS ENUM('Repair', 'Maintenance');")
+            cursor.execute(
+                "CREATE TYPE req_type AS ENUM('Repair', 'Maintenance');")
             create_requests = """CREATE TABLE requests(
                                     request_id SERIAL PRIMARY KEY,
                                     user_id INT,

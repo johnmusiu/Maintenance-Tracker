@@ -1,8 +1,7 @@
 # api/requests/views.py
 
 from . import mrequests
-from flask import request, jsonify, json, session
-from api.models import Request
+from flask import request, jsonify, session
 from api.models import Request
 from functools import wraps
 import jwt
@@ -23,7 +22,7 @@ def token_required(f):
             session['user_id'] = data.get('user_id')
             session['role'] = data.get('role')
 
-        except Exception as e:
+        except Exception:
             return jsonify({'message': 'Token is invalid!'}), 403
 
         return f(*args, **kwargs)
@@ -46,13 +45,14 @@ def requests():
         validation = validate_input(title, description, category)
         if validation is not True:
             return validation
-        result = Request().save(session['user_id'], category, title, description)
-            
+        result = Request().save(
+            session['user_id'], category, title, description)
+
         if result[0] is False:
             response = jsonify({
                 'message': result[1]
             })
-        else:     
+        else:
             response = jsonify({
                 'message': "Maintenance request submitted successfully.",
                 'request_id': result[1][0],
@@ -115,12 +115,12 @@ def update_request(request_id):
     if validation is not True:
         return validation
 
-    results = Request().update(session['user_id'], request_id, title, 
-        description, category)
-        
+    results = Request().update(session['user_id'], request_id, title,
+                               description, category)
+
     if results[0] is False:
         return jsonify({"message": results[1]}), results[2]
-    
+
     return jsonify({
         "message": "Maintenance request updated successfully.",
         "request_id": request_id,
