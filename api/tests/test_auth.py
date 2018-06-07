@@ -9,6 +9,7 @@ import unittest
 import json
 from api import create_app
 from api.models import User, Request
+from migration import migration
 
 
 class TestAPIAuth(unittest.TestCase):
@@ -22,13 +23,14 @@ class TestAPIAuth(unittest.TestCase):
         self.app_client = self.app.test_client()
 
         self.sample_user = {
-            "name": "Bob Burgers",
+            "first_name": "Bob",
+            "last_name": "Burgers",
             "email": "bob@example.com",
             "password": "pass1#Ps",
             "confirm_password": "pass1#Ps"
         }
-        User().users.clear()
-        Request().requests.clear()
+        # run migrations before each test
+        migration()
 
     # begin tests for api user signin
     def test_user_signin(self):
@@ -45,6 +47,7 @@ class TestAPIAuth(unittest.TestCase):
                                 data=json.dumps(self.sample_user),
                                 content_type="application/json")
         result = json.loads(response.data)
+        self.assertIn('access-token', result)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(result["message"], "Login success, welcome!")
 
@@ -94,7 +97,8 @@ class TestAPIAuth(unittest.TestCase):
                                     content_type="application/json")
         result = json.loads(response.data)
         self.assertEqual(result["message"], "Please enter a valid email address!")
-        self.assertEqual(response.status_code, 400)  
+        self.assertEqual(response.status_code, 400) 
+    
     # end tests for api user signin
 
     # begin tests for api user signup 
@@ -123,16 +127,16 @@ class TestAPIAuth(unittest.TestCase):
 
         #test with empty name
         self.sample_user['email'] = "bob@example.com"
-        self.sample_user['name'] = ""
+        self.sample_user['first_name'] = ""
         response2 = self.app_client.post('/api/v1/auth/register', 
                                     data=json.dumps(self.sample_user),
                                     content_type="application/json")
         result2 = json.loads(response2.data)
-        self.assertEqual(result2["message"], "Please fill in required name field!")
+        self.assertEqual(result2["message"], "Please fill in required first_name field!")
         self.assertEqual(response2.status_code, 400)  
 
         #test with empty password
-        self.sample_user['name'] = "Bob Burgers"
+        self.sample_user['first_name'] = "Bob"
         self.sample_user['password'] = ""
         response3 = self.app_client.post('/api/v1/auth/register', 
                                     data=json.dumps(self.sample_user),
@@ -143,7 +147,7 @@ class TestAPIAuth(unittest.TestCase):
 
     def test_signup_invalid_email(self):
         """ Test if user signup is done using an invalid email address"""
-        self.sample_user['email'] = "bob@232"
+        self.sample_user['email'] = "invalid====email@email.com"
         response = self.app_client.post('/api/v1/auth/register', 
                                     data=json.dumps(self.sample_user),
                                     content_type="application/json")
@@ -158,16 +162,16 @@ class TestAPIAuth(unittest.TestCase):
 
         """
         #test invalid name
-        self.sample_user['name'] = "$Bob &Burgers"
+        self.sample_user['first_name'] = "$Bob &Burgers"
         response = self.app_client.post('/api/v1/auth/register', 
                                     data=json.dumps(self.sample_user),
                                     content_type="application/json")
         result = json.loads(response.data)
-        self.assertEqual(result["message"], "Please enter a valid name!")
+        self.assertEqual(result["message"], "Please enter a valid first_name!")
         self.assertEqual(response.status_code, 400) 
 
         #test invalid email
-        self.sample_user['name'] = "Bob Burgers"
+        self.sample_user['first_name'] = "Bob"
         self.sample_user['email'] = "1bob@example.com"
         response = self.app_client.post('/api/v1/auth/register', 
                                     data=json.dumps(self.sample_user),
@@ -190,8 +194,7 @@ class TestAPIAuth(unittest.TestCase):
 
     def tearDown(self):
         """ clear the data and variables set during testing """
-        Request().requests.clear()
-        User().users.clear()
+        
 
 if __name__ == "__main__":
     unittest.main()
