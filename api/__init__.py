@@ -1,6 +1,7 @@
 """
  defines the endpoints of the API
 """
+import os
 from flask_api import FlaskAPI
 from instance.config import app_config
 import re
@@ -10,6 +11,7 @@ def create_app(config_name):
     app = FlaskAPI(__name__, instance_relative_config=True)
     app.config.from_object(app_config[config_name])
     app.config.from_pyfile('config.py')
+    app.secret_key = os.getenv('SECRET_KEY')
 
     from api.auth.views import auth
     app.register_blueprint(auth)
