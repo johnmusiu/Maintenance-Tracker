@@ -103,9 +103,7 @@ class Request():
                             or status = 'open') and type = %s;",
                            (user_id, title, category,))
             requests = cursor.fetchone()
-        except Exception as e:
-            print(e)
-        try:
+
             if requests:
                 result = (False,
                           "Request already exists, wait for resolution!")
@@ -117,12 +115,10 @@ class Request():
                            RETURNING (request_id, title);",
                                (user_id, category, title, description,))
                 db.conn.commit()
-                res = cursor.fetchone()
+                res = cursor.fetchone()[0]
                 result = (True, res)
-        except Exception as e:
-            print(e)
+        except Exception:
             result = (False)
-
         return result
 
     def get_all_my_requests(self, user_id):
