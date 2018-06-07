@@ -30,12 +30,20 @@ def token_required(f):
     return decorated
 
 
-def role_required(f):
-    return True
+def role_required(*roles):
+    def wrapper(f):
+        @wraps(f)
+        def wrapped(*args, **kwargs):
+            if session['role'] not in roles:
+                return jsonify({'message':u'Access Denied.'}), 401
+            return f(*args, **kwargs)
+        return wrapped
+    return wrapper
 
 
 @mrequests.route('/requests', methods=['POST', 'GET'])
 @token_required
+@role_required('0')
 def requests():
     if request.method == "POST":
         title = str(request.data.get('title', ''))
@@ -47,7 +55,6 @@ def requests():
             return validation
         result = Request().save(
             session['user_id'], category, title, description)
-
         if result[0] is False:
             response = jsonify({
                 'message': result[1]
@@ -58,7 +65,7 @@ def requests():
                 'request_id': result[1][0],
                 'title': result[1][1],
                 'description': description,
-                'type': type,
+                'type': category,
                 'status': 'open'
             })
             response.status_code = 201
@@ -104,6 +111,7 @@ def validate_input(title, description, category):
 
 @mrequests.route('/requests/<int:request_id>', methods=['PUT'])
 @token_required
+@role_required('0')
 def update_request(request_id):
     """ endpoint for update request """
     title = str(request.data.get('title', ''))
@@ -134,6 +142,7 @@ def update_request(request_id):
 
 @mrequests.route('/requests/<int:request_id>', methods=['GET'])
 @token_required
+@role_required('0')
 def get_request_by_id(request_id):
     """ route to retrieve request by id """
     # returns all requests made by a certain user
