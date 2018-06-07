@@ -2,38 +2,67 @@
     defines the data models of the app
 """
 import os
-from flask import current_app
 import time
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
+from flask import session
+from .db_helper import json_fetch_all, json_fetch_one, execute_query, fetch_one
 from .db_connect import DBConnect
 
 class User():
-    """ the user model """
-    #initialize an empty users dict
-    users = {}
+    """ the user model methods"""
 
     def __init__(self, name=None, email=None, password=None):
         self.name = name
         self.email = email
         self.password = str(password)
 
-    def signup(self):
+    def signup(self, fname, lname, email, password):
         """ define method to create an account"""
-        #check if email taken
-        if self.users.get(self.email):
-            return ("0", "Email address already registered under another account")
-        count_users = len(self.users)
-        self.password = generate_password_hash(self.password)
-        self.users[self.email] = (count_users+1, self.name, self.password, self.email)
-        return ("1", (count_users+1, self.email, self.name))
+        try:  
+            db = DBConnect()
+            cursor = db.connect()
+            # check if email taken
+            cursor.execute("SELECT * FROM users where email = %s;", (email,))
+            user = cursor.fetchone()
+            if not user:
+                password = generate_password_hash(password)
+                cursor.execute("INSERT INTO users(first_name, last_name,\
+                            email, password, is_admin) VALUES(%s, %s, %s, %s, '0');",
+                            (fname, lname, email, password))
+                db.conn.commit()
+                result = (True, email, fname, lname)
+            else:
+                result = (
+                    False,
+                    "Email address already registered under another account")
+        except Exception as ex:
+            print(ex)
+            result = (False, "Internal error, contact admin")
+        return result
 
-    def verify_password(self, password):
-        """ function to verify password hash """
-        return check_password_hash((self.password), password)
+    def signin(self, email, password):
+        """ function to verify user details on login """
+        try:  
+            db = DBConnect()
+            cursor = db.connect()
+            cursor.execute("SELECT * FROM users where email = %s;", (email,))
+            user = cursor.fetchone()
+            if user is None:
+                return False
+            else:
+                if check_password_hash(user[4], password):
+                    result = ({'id':user[0], 'is_admin':user[7]})
+                else:
+                    result = False
+        except Exception as ex:
+            print(ex)
+            result = False
+        return result
 
-    def generate_token(self, email):
+
+    def generate_token(self, email, is_admin, user_id):
         """
             Generates the Auth Token for the currently logging in user
             :returns: string
@@ -42,122 +71,127 @@ class User():
             payload = {
                 'exp': datetime.utcnow() + timedelta(minutes=60),
                 'iat': datetime.utcnow(),
-                'sub': email
+                'sub': email,
+                'user_id': user_id,
+                'role': is_admin
             }
             return jwt.encode(
                 payload,
-                os.getenv('SECRET'),
+                os.getenv('SECRET_KEY'),
                 algorithm='HS256'
             )
         except Exception as e:
             return e
 
-    @staticmethod
-    def decode_token(token):
-        """
-        Decodes the auth token on user request to the app
-        """
-        try:
-            payload = jwt.decode(token, os.getenv('SECRET_KEY'))
-            return payload['sub']
-        except jwt.ExpiredSignatureError:
-            return 'Expired'
-        except jwt.InvalidTokenError:
-            return 'Invalid'
-                
+
 class Request():
     """ the requests model """
-    requests = {}
 
-    def __init__(self, title=None, description=None, category=None):
+    def __init__(self):
         """initialize instance variables """
-        self.title = title
-        self.description = description
-        self.category = category
-        self.status = "open"
-        self.created_at = time.strftime('%A %B, %d %Y %H:%M:%S')
-        self.updated_at = self.created_at
-    
-    def save(self, user_id):
+
+    def save(self, user_id, category, title, description):
         """ save request """
-        #get my requests
-        my_requests = self.requests.get(user_id, "0")
-        count = 0
-        if my_requests != "0":
-            for user, user_requests in my_requests.iteritems():
-                count += len(user_requests)
+        # check if a similar open or pending request exists for the user
+        """ get my requests """
+        db = DBConnect()
+        cursor = db.connect()
+        # check if email taken
+        try:
+            cursor.execute(u"SELECT * FROM requests where user_id = %s and \
+                            title = %s and (status = 'pending' \
+                            or status = 'open') and type = %s;", 
+                            (user_id, title, category,))
+            requests = cursor.fetchone()
+        except Exception as e:
+            print(e)
+        try:
+            if requests:
+                result = (False, "Request already exists, wait for resolution!")
+            else:                     
+                cursor.execute(u"INSERT INTO requests(user_id, type, title,\
+                            description, created_at, updated_at, status)\
+                           VALUES(%s, %s, %s, %s, current_timestamp, \
+                           current_timestamp, 'open') \
+                           RETURNING (request_id, title);",
+                           (user_id, category, title, description,))
+                db.conn.commit()
+                res = cursor.fetchone()
+                result = (True, res)
+        except Exception as e:
+            print(e)
+            result = (False)
 
-        new_request = ({self.title: (count+1, self.description, self.category,
-                                    user_id, self.status, self.created_at, 
-                                    self.updated_at)})
-
-        if my_requests != "0":
-            """check if request already exists """
-            is_exist = my_requests.get(self.title, "0")
-            if is_exist == "0":
-                self.requests[user_id].update(new_request)
-                return ("1", new_request)
-            else: 
-                return ("0", "")
-        else:
-            self.requests[user_id] = new_request
-            return ("1", new_request)
+        return result
 
     def get_all_my_requests(self, user_id):
         """ get my requests """
-        my_requests = self.requests.get(user_id, "0")
-        if my_requests == "0":
-            return "0"
-        result = {}
-        for request_title, req_dets in my_requests.items():
-            result[req_dets[0]] = {
-                "title": request_title,
-                "description": req_dets[1],
-                "type": req_dets[2],
-                "user_id": req_dets[3],
-                "status": req_dets[4],
-                "created_at": req_dets[5]
-            }
-        return ("1", result)
+        db = DBConnect()
+        cursor = db.connect()
+        # check if email taken
+        try:
+            cursor.execute("SELECT * FROM requests where user_id = %s;", 
+                (user_id,))
+            requests = cursor.fetchall()
+
+            if not requests:
+                result = False
+            else:
+                result = {}
+                for request in requests:
+                    result[request[0]] = {
+                        "title": request[5],
+                        "description": request[6],
+                        "type": request[4],
+                        "status": request[3],
+                        "resolved_at": request[9],
+                        "created_at": request[7]
+                    }
+        except Exception as e:
+            print(e)
+            result = False
+        db.close_conn()
+        return result
 
     def update(self, user_id, request_id, title, description, category):
         """ update request """
-        my_requests = self.requests.get(user_id, "0")
-        updated_at = time.strftime('%A %B, %d %Y %H:%M:%S')
-
-        if my_requests == "0":
-            result = ("0", "Request id not found.")
-        else:
-            for req_title, req_dets in my_requests.items():
-                if req_dets[0] == request_id:
-                    update = ({title: (request_id, title, description, 
-                                        category, user_id, req_dets[4], 
-                                        req_dets[5], updated_at)})                                       
-                    #check if it doesnt duplicate another request
-                    matched_title = my_requests.get(title, "0")
-                    if matched_title == "0":
-                        my_requests.pop(req_title)
-                        my_requests.update(update)
-                        result = ("1", update)
-                    else: 
-                        if matched_title[0] == request_id:
-                            my_requests.pop(req_title)
-                            my_requests.update(update)
-                            result = ("1", update)
-                        else:
-                            result = ("0", "Duplicate entry, request not updated")
-                # else: 
-                #     result = ("0", "Request id not found")
+        try:
+            #check if request exists
+            sql = u"SELECT * FROM requests where request_id = %s;"
+            values = (request_id,)
+            res = fetch_one(sql, values)
+            if not res:
+                result = (False, "This request does not exist!", 404)
+            else:
+                if res[1] != session['user_id']:
+                    result = (False, "You can only update your own requests", 401)
+                elif res[3] != 'open':
+                    result = (False, "Editing this request is not allowed", 403)
+                else:
+                    sql = u"UPDATE requests SET title=%s, description=%s,\
+                            type=%s, updated_at=current_timestamp \
+                            WHERE request_id=%s;"
+                    values = (title, description, category, request_id,)
+                    res = execute_query(sql, values)
+                    result = (True, values)
+        except Exception as ex:
+            print(ex)
         return result
-        
-    def get_by_id(self, user_id, request_id):
+
+    def get_by_id(self, request_id):
         """ get request by id"""
-        my_requests = self.requests.get(user_id, "0")
-        
-        if my_requests == "0":
-            return ("0")
-        for request_title, req_dets in my_requests.items():
-            if req_dets[0] == request_id:
-                return ("1", request_title, req_dets)
-        return ("0")
-        
+        #check if request exists
+        sql = u"SELECT * FROM requests WHERE request_id = %s AND user_id = %s;"
+        values = (request_id, session['user_id'],)
+        request = fetch_one(sql, values)
+        if not request:
+            return (False, "This request does not exist!", 404)
+        result = {
+            "title": request[5],
+            "description": request[6],
+            "type": request[4],
+            "status": request[3],
+            "resolved_at": request[9],
+            "created_at": request[7]
+        }
+        return (True, result)
