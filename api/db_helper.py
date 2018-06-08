@@ -53,6 +53,7 @@ def fetch_one(query, values):
         print(ex)
         return False
 
+
 def fetch_all(query):
     """ retrieve one db data result"""
     try:

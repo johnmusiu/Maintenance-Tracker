@@ -230,7 +230,7 @@ class Request():
             "created_at": request[7]
         }
         return (True, result)
-    
+
     @staticmethod
     def admin_approve(request_id):
         """ admin approve request"""
@@ -245,7 +245,7 @@ class Request():
             "request_id": request
         }
         return (True, result)
-    
+
     @staticmethod
     def admin_disapprove(request_id):
         """ admin disapprove request """

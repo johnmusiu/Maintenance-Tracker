@@ -3,6 +3,7 @@ from functools import wraps
 import jwt
 import os
 
+
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -30,7 +31,9 @@ def role_required(*roles):
         @wraps(f)
         def wrapped(*args, **kwargs):
             if session['role'] not in roles:
-                return jsonify({'message':u'Access Denied.'}), 403
+                return jsonify({
+                    'message': u'Access Denied.'
+                }), 403
             return f(*args, **kwargs)
         return wrapped
     return wrapper
