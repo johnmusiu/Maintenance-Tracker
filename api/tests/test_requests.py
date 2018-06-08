@@ -169,9 +169,8 @@ class TestAPIRequests(unittest.TestCase):
 										headers=headers)
 
 		result1 = json.loads(response1.data)
-		self.assertEqual(result1["title"], "Fix mouses and keyboards")
-		self.assertEqual(result1["message"],
-						"Maintenance request updated successfully.")
+		self.assertIn("Fix mouses and keyboards", str(result1))
+		self.assertIn("Maintenance request updated successfully.", str(result1))
 		self.assertEqual(response1.status_code, 200)
 
 	def test_update_request_with_null_field(self):
@@ -270,7 +269,7 @@ class TestAPIRequests(unittest.TestCase):
 		result2 = json.loads(response2.data)
 		print({'res2': result2})
 		self.assertEqual(response2.status_code, 200)
-		self.assertEqual(result2["title"], "Fix mouses")
+		self.assertIn("Fix mouses", str(result2))
 	# end tests for api get request by id
 
 	# begin tests for api get all requests

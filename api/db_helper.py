@@ -50,11 +50,11 @@ def fetch_one(query, values):
         return False
 
 
-def fetch_all(query):
+def fetch_all(query, values=""):
     """ retrieve one db data result"""
     try:
         db = DBConnect()
-        db.connect().execute(query)
+        db.connect().execute(query, values)
         res = db.cursor.fetchall()
         db.close_conn()
         return res
