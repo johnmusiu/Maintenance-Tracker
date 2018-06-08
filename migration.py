@@ -57,8 +57,7 @@ def migration():
             db.conn.commit()
             db.close_conn()
             return True
-    except Exception as ex:
-        print(ex)
+    except Exception:
         return False
 
 
