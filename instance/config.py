@@ -19,7 +19,7 @@ class TestingConfig(Config):
     """ Testing time config """
     TESTING = True
     DEBUG = True
-    DB_NAME = os.getenv('DB_NAME')
+    DB_NAME = os.getenv('DB_TEST')
 
 
 class StagingConfig(Config):
