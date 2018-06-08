@@ -52,3 +52,15 @@ def fetch_one(query, values):
     except Exception as ex:
         print(ex)
         return False
+
+def fetch_all(query):
+    """ retrieve one db data result"""
+    try:
+        db = DBConnect()
+        db.connect().execute(query)
+        res = db.cursor.fetchall()
+        db.close_conn()
+        return res
+    except Exception as ex:
+        print(ex)
+        return False
