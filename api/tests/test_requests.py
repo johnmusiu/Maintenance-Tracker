@@ -1,13 +1,12 @@
 """
-This module include tests to the users/requests endpoints of the API
+
+	This module include tests to the users/requests endpoints of the API
 
 """
 
 import unittest
 import json
 from api import create_app
-from migration import migration
-from api.models import User
 from migration import migration
 
 
@@ -304,10 +303,10 @@ class TestAPIRequests(unittest.TestCase):
 		self.assertIn("Fix mouses", str(result))
 		# end tests for api get all requests
 
-  	def tearDown(self):
+	def tearDown(self):
 		""" teardown all initialized variables """
 		migration()
 
 
 if __name__ == "__main__":
-  unittest.main()
+    unittest.main()

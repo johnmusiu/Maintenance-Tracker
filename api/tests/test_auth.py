@@ -203,7 +203,7 @@ class TestAPIAuth(unittest.TestCase):
 
     def tearDown(self):
         """ clear the data and variables set during testing """
-
+        migration()
 
 if __name__ == "__main__":
     unittest.main()
