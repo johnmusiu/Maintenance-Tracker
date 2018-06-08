@@ -18,8 +18,7 @@ def requests():
         validation = validate_input(title, description, category)
         if validation is not True:
             return validation
-        result = Request().save(
-            session['user_id'], category, title, description)
+        result = Request().save(category, title, description)
         if result[0] is False:
             response = jsonify({
                 'message': result[1]
@@ -88,8 +87,7 @@ def update_request(request_id):
     if validation is not True:
         return validation
 
-    results = Request().update(session['user_id'], request_id, title,
-                               description, category)
+    results = Request().update(request_id, title, description, category)
     if results[0] is False:
         return jsonify({"message": results[1]}), results[2]
 
