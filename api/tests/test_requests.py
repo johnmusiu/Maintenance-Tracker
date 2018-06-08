@@ -46,13 +46,12 @@ class TestAPIRequests(unittest.TestCase):
         "type": "Maintenance",
     }
 
-    migration()
 
   @staticmethod
   def get_header(email, is_admin, user_id):
     """ helper method to generate token """
     access_token = User().generate_token(email, is_admin, user_id)
-    return {'access-token': access_token.decode()}
+    return {'access-token': access_token}
 
   # test unauthorised requests
   def test_no_token(self):
@@ -299,6 +298,7 @@ class TestAPIRequests(unittest.TestCase):
 
   def tearDown(self):
     """ teardown all initialized variables """
+    migration()
 
 
 if __name__ == "__main__":
