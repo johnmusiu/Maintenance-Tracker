@@ -33,7 +33,7 @@ def migration():
                             );"""
 
             # create table requests sql statement
-            cursor.execute("""CREATE TYPE status AS ENUM('open', 'unapproved',
+            cursor.execute("""CREATE TYPE status AS ENUM('open', 'disapproved',
                             'pending', 'resolved');""")
             cursor.execute(
                 "CREATE TYPE req_type AS ENUM('Repair', 'Maintenance');")

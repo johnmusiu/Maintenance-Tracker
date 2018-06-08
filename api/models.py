@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from flask import session
-from .db_helper import execute_query, fetch_one
+from .db_helper import execute_query, fetch_one, fetch_all
 from .db_connect import DBConnect
 
 
@@ -179,7 +179,6 @@ class Request():
 
     def get_by_id(self, request_id):
         """ get request by id"""
-        # check if request exists
         sql = u"SELECT * FROM requests WHERE request_id = %s AND user_id = %s;"
         values = (request_id, session['user_id'],)
         request = fetch_one(sql, values)
@@ -192,5 +191,87 @@ class Request():
             "status": request[3],
             "resolved_at": request[9],
             "created_at": request[7]
+        }
+        return (True, result)
+
+    @staticmethod
+    def admin_get_all():
+        """ get request by id"""
+        sql = u"SELECT * FROM requests;"
+        requests = fetch_all(sql)
+        if not requests:
+            return (False, "This request does not exist!", 404)
+        result = {}
+        for request in requests:
+            result[request[0]] = {
+                "title": request[5],
+                "description": request[6],
+                "type": request[4],
+                "status": request[3],
+                "resolved_at": request[9],
+                "created_at": request[7]
+            }
+        return (True, result)
+
+    @staticmethod
+    def admin_get_by_id(request_id):
+        """ get request by id"""
+        sql = u"SELECT * FROM requests WHERE request_id = %s;"
+        values = (request_id,)
+        request = fetch_one(sql, values)
+        if not request:
+            return (False, "This request does not exist!", 404)
+        result = {
+            "title": request[5],
+            "description": request[6],
+            "type": request[4],
+            "status": request[3],
+            "resolved_at": request[9],
+            "created_at": request[7]
+        }
+        return (True, result)
+
+    @staticmethod
+    def admin_approve(request_id):
+        """ admin approve request"""
+        sql = u"UPDATE requests SET status='pending' WHERE request_id = %s \
+                RETURNING ('request_id');"
+        values = (request_id,)
+        request = execute_query(sql, values)
+        if not request:
+            return (False, "This request does not exist!", 404)
+        result = {
+            "message": "Request approved successfully",
+            "request_id": request
+        }
+        return (True, result)
+
+    @staticmethod
+    def admin_disapprove(request_id):
+        """ admin disapprove request """
+        sql = u"UPDATE requests SET status='disapproved' WHERE request_id = %s \
+                RETURNING ('request_id');"
+        values = (request_id,)
+        request = execute_query(sql, values)
+        if not request:
+            return (False, "This request does not exist!", 404)
+        result = {
+            "message": "Request disapproved successfully",
+            "request_id": request
+        }
+        return (True, result)
+
+    @staticmethod
+    def admin_resolve(request_id):
+        """ admin resolve request"""
+        sql = u"UPDATE requests SET status='resolved' WHERE request_id = %s \
+                RETURNING ('request_id');"
+        values = (request_id,)
+        request = execute_query(sql, values)
+        if not request:
+            return (False, "This request does not exist!", 404)
+        result = {
+            "message": "Request resolved successfully",
+            "request_id": request
         }
         return (True, result)
