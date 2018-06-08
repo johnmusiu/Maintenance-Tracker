@@ -112,11 +112,11 @@ class Request():
                             description, created_at, updated_at, status)\
                            VALUES(%s, %s, %s, %s, current_timestamp, \
                            current_timestamp, 'open') \
-                           RETURNING (request_id, title);",
+                           RETURNING request_id;",
                                (user_id, category, title, description,))
                 db.conn.commit()
-                res = cursor.fetchone()[0]
-                result = (True, res)
+                res_id = cursor.fetchone()[0]
+                result = (True, res_id)
         except Exception:
             result = (False)
         return result
@@ -144,37 +144,33 @@ class Request():
                         "resolved_at": request[9],
                         "created_at": request[7]
                     }
-        except Exception as e:
-            print(e)
+        except Exception:
             result = False
         db.close_conn()
         return result
 
     def update(self, user_id, request_id, title, description, category):
         """ update request """
-        try:
-            # check if request exists
-            sql = u"SELECT * FROM requests where request_id = %s;"
-            values = (request_id,)
-            res = fetch_one(sql, values)
-            if not res:
-                result = (False, "This request does not exist!", 404)
+        # check if request exists
+        sql = u"SELECT * FROM requests where request_id = %s;"
+        values = (request_id,)
+        res = fetch_one(sql, values)
+        if not res:
+            result = (False, "This request does not exist!", 404)
+        else:
+            if res[1] != session['user_id']:
+                result = (
+                    False, "You can only update your own requests", 401)
+            elif res[3] != 'open':
+                result = (
+                    False, "Editing this request is not allowed", 403)
             else:
-                if res[1] != session['user_id']:
-                    result = (
-                        False, "You can only update your own requests", 401)
-                elif res[3] != 'open':
-                    result = (
-                        False, "Editing this request is not allowed", 403)
-                else:
-                    sql = u"UPDATE requests SET title=%s, description=%s,\
-                            type=%s, updated_at=current_timestamp \
-                            WHERE request_id=%s;"
-                    values = (title, description, category, request_id,)
-                    res = execute_query(sql, values)
-                    result = (True, values)
-        except Exception as ex:
-            print(ex)
+                sql = u"UPDATE requests SET title=%s, description=%s,\
+                        type=%s, updated_at=current_timestamp \
+                        WHERE request_id=%s;"
+                values = (title, description, category, request_id,)
+                res = execute_query(sql, values)
+                result = (True, values)
         return result
 
     def get_by_id(self, request_id):
@@ -183,7 +179,7 @@ class Request():
         values = (request_id, session['user_id'],)
         request = fetch_one(sql, values)
         if not request:
-            return (False, "This request does not exist!", 404)
+            return (False, "Request id not found.", 404)
         result = {
             "title": request[5],
             "description": request[6],

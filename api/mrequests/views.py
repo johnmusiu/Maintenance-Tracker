@@ -6,7 +6,7 @@ from api.models import Request
 from ..wrappers import token_required, role_required
 
 
-@mrequests.route('/requests', methods=['POST', 'GET'])
+@mrequests.route('', methods=['POST', 'GET'])
 @token_required
 @role_required('0')
 def requests():
@@ -27,8 +27,8 @@ def requests():
         else:
             response = jsonify({
                 'message': "Maintenance request submitted successfully.",
-                'request_id': result[1][0],
-                'title': result[1][1],
+                'request_id': result[1],
+                'title': title,
                 'description': description,
                 'type': category,
                 'status': 'open'
@@ -74,7 +74,7 @@ def validate_input(title, description, category):
     return True
 
 
-@mrequests.route('/requests/<int:request_id>', methods=['PUT'])
+@mrequests.route('/<int:request_id>', methods=['PUT'])
 @token_required
 @role_required('0')
 def update_request(request_id):
@@ -90,7 +90,7 @@ def update_request(request_id):
 
     results = Request().update(session['user_id'], request_id, title,
                                description, category)
-
+    print(results)
     if results[0] is False:
         return jsonify({"message": results[1]}), results[2]
 
@@ -105,7 +105,7 @@ def update_request(request_id):
     }), 200
 
 
-@mrequests.route('/requests/<int:request_id>', methods=['GET'])
+@mrequests.route('/<int:request_id>', methods=['GET'])
 @token_required
 @role_required('0')
 def get_request_by_id(request_id):
