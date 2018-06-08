@@ -10,8 +10,7 @@ def execute_query(query, values):
         db.connect().execute(query, values)
         db.conn.commit()
         return True
-    except Exception as ex:
-        print(ex)
+    except Exception:
         return False
 
 
@@ -23,8 +22,7 @@ def json_fetch_all(query, values):
         res = json.dumps(db.cursor.fetchall(), indent=2)
         db.close_conn()
         return res
-    except Exception as ex:
-        print(ex)
+    except Exception:
         return False
 
 
@@ -36,8 +34,7 @@ def json_fetch_one(query, values):
         res = json.dumps(db.cursor.fetchone())
         db.close_conn()
         return res
-    except Exception as ex:
-        print(ex)
+    except Exception:
         return False
 
 
@@ -49,8 +46,7 @@ def fetch_one(query, values):
         res = db.cursor.fetchone()
         db.close_conn()
         return res
-    except Exception as ex:
-        print(ex)
+    except Exception:
         return False
 
 
@@ -62,6 +58,5 @@ def fetch_all(query):
         res = db.cursor.fetchall()
         db.close_conn()
         return res
-    except Exception as ex:
-        print(ex)
+    except Exception:
         return False
