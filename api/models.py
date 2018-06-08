@@ -38,8 +38,7 @@ class User():
                 result = (
                     False,
                     "Email address already registered under another account")
-        except Exception as ex:
-            print(ex)
+        except Exception:
             result = (False, "Internal error, contact admin")
         return result
 
@@ -57,8 +56,7 @@ class User():
                     result = ({'id': user[0], 'is_admin': user[7]})
                 else:
                     result = False
-        except Exception as ex:
-            print(ex)
+        except Exception:
             result = False
         return result
 

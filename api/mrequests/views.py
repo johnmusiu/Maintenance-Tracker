@@ -90,7 +90,6 @@ def update_request(request_id):
 
     results = Request().update(session['user_id'], request_id, title,
                                description, category)
-    print(results)
     if results[0] is False:
         return jsonify({"message": results[1]}), results[2]
 
