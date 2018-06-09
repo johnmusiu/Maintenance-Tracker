@@ -22,4 +22,7 @@ def create_app(config_name):
     from api.mrequests.admin import admin_bp
     app.register_blueprint(admin_bp)
 
+    from api.mrequests.super_admin import super_admin_bp
+    app.register_blueprint(super_admin_bp)
+
     return app
