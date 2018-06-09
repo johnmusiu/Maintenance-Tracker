@@ -277,7 +277,3 @@ class TestAPIRequests(unittest.TestCase):
 	def tearDown(self):
 		""" teardown all initialized variables """
 		migration()
-
-
-if __name__ == "__main__":
-	unittest.main()

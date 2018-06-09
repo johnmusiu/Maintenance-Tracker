@@ -185,5 +185,6 @@ class TestAdmin(unittest.TestCase):
         response = self.app_client.put('/api/v1/requests/1/resolve', headers=headers)
         print(response)
         self.assertEqual(response.status_code, 200)
+        
     def tearDown(self):
         migration()
