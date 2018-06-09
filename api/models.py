@@ -18,48 +18,39 @@ class User():
         self.email = email
         self.password = str(password)
 
-    def signup(self, fname, lname, email, password):
+    def signup(self, fname, lname, email, password, is_admin="0"):
         """ define method to create an account"""
-        try:
-            db = DBConnect()
-            cursor = db.connect()
-            # check if email taken
-            cursor.execute("SELECT * FROM users where email = %s;", (email,))
-            user = cursor.fetchone()
-            if not user:
-                password = generate_password_hash(password)
-                cursor.execute(u"INSERT INTO users(first_name, last_name,\
+        # check if email taken
+        sql = "SELECT * FROM users where email = %s;"
+        values = (email,)
+        user = fetch_one(sql, values)
+        if not user:
+            password = generate_password_hash(password)
+            sql = u"INSERT INTO users(first_name, last_name,\
                             email, password, is_admin) \
-                            VALUES(%s, %s, %s, %s, '0');",
-                               (fname, lname, email, password))
-                db.conn.commit()
-                result = (True, email, fname, lname)
-            else:
-                result = (
-                    False,
-                    "Email address already registered under another account")
-        except Exception as ex:
-            print(ex)
-            result = (False, "Internal error, contact admin")
+                            VALUES(%s, %s, %s, %s, %s);"
+
+            values = (fname, lname, email, password, is_admin,)
+            execute_query(sql, values)
+            result = (True, email, fname, lname)
+        else:
+            result = (
+                False,
+                "Email address already registered under another account")
         return result
 
     def signin(self, email, password):
         """ function to verify user details on login """
-        try:
-            db = DBConnect()
-            cursor = db.connect()
-            cursor.execute("SELECT * FROM users where email = %s;", (email,))
-            user = cursor.fetchone()
-            if user is None:
-                return False
+        sql = u"SELECT * FROM users where email = %s;"
+        values = (email,)
+        user = fetch_one(sql, values)
+        if user is None:
+            return False
+        else:
+            if check_password_hash(user[4], password):
+                result = ({'id': user[0], 'is_admin': user[7]})
             else:
-                if check_password_hash(user[4], password):
-                    result = ({'id': user[0], 'is_admin': user[7]})
-                else:
-                    result = False
-        except Exception as ex:
-            print(ex)
-            result = False
+                result = False
         return result
 
     def generate_token(self, email, is_admin, user_id):
@@ -83,120 +74,62 @@ class User():
         except Exception as e:
             return e
 
-
-class Request():
-    """ the requests model """
-
+class Admin(User):
+    """ admin user class """
     def __init__(self):
-        """initialize instance variables """
-
-    def save(self, user_id, category, title, description):
-        """ save request """
-        # check if a similar open or pending request exists for the user
-        """ get my requests """
-        db = DBConnect()
-        cursor = db.connect()
-        # check if email taken
-        try:
-            cursor.execute(u"SELECT * FROM requests where user_id = %s and \
-                            title = %s and (status = 'pending' \
-                            or status = 'open') and type = %s;",
-                           (user_id, title, category,))
-            requests = cursor.fetchone()
-
-            if requests:
-                result = (False,
-                          "Request already exists, wait for resolution!")
-            else:
-                cursor.execute(u"INSERT INTO requests(user_id, type, title,\
-                            description, created_at, updated_at, status)\
-                           VALUES(%s, %s, %s, %s, current_timestamp, \
-                           current_timestamp, 'open') \
-                           RETURNING request_id;",
-                               (user_id, category, title, description,))
-                db.conn.commit()
-                res_id = cursor.fetchone()[0]
-                result = (True, res_id)
-        except Exception:
-            result = (False)
-        return result
-
-    def get_all_my_requests(self, user_id):
-        """ get my requests """
-        db = DBConnect()
-        cursor = db.connect()
-        # check if email taken
-        try:
-            cursor.execute("SELECT * FROM requests where user_id = %s;",
-                           (user_id,))
-            requests = cursor.fetchall()
-
-            if not requests:
-                result = False
-            else:
-                result = {}
-                for request in requests:
-                    result[request[0]] = {
-                        "title": request[5],
-                        "description": request[6],
-                        "type": request[4],
-                        "status": request[3],
-                        "resolved_at": request[9],
-                        "created_at": request[7]
-                    }
-        except Exception:
-            result = False
-        db.close_conn()
-        return result
-
-    def update(self, user_id, request_id, title, description, category):
-        """ update request """
-        # check if request exists
-        sql = u"SELECT * FROM requests where request_id = %s;"
+        """ inherit user methods """
+        User.__init__(self)
+    
+    def approve(self, request_id):
+        """ admin approve request"""
+        is_exists = Request().check_exists(request_id)
+        if is_exists is False:
+            return (False, "This request does not exist!", 404)
+        sql = u"UPDATE requests SET status='pending' WHERE request_id = %s;"
         values = (request_id,)
-        res = fetch_one(sql, values)
-        if not res:
-            result = (False, "This request does not exist!", 404)
-        else:
-            if res[1] != session['user_id']:
-                result = (
-                    False, "You can only update your own requests", 401)
-            elif res[3] != 'open':
-                result = (
-                    False, "Editing this request is not allowed", 403)
-            else:
-                sql = u"UPDATE requests SET title=%s, description=%s,\
-                        type=%s, updated_at=current_timestamp \
-                        WHERE request_id=%s;"
-                values = (title, description, category, request_id,)
-                res = execute_query(sql, values)
-                result = (True, values)
-        return result
-
-    def get_by_id(self, request_id):
-        """ get request by id"""
-        sql = u"SELECT * FROM requests WHERE request_id = %s AND user_id = %s;"
-        values = (request_id, session['user_id'],)
-        request = fetch_one(sql, values)
-        if not request:
-            return (False, "Request id not found.", 404)
+        execute_query(sql, values)
         result = {
-            "title": request[5],
-            "description": request[6],
-            "type": request[4],
-            "status": request[3],
-            "resolved_at": request[9],
-            "created_at": request[7]
+            "message": "Request approved successfully",
+            "request_id": request_id
         }
         return (True, result)
 
-    @staticmethod
-    def admin_get_all():
+    def disapprove(self, request_id):
+        """ admin disapprove request """
+        is_exists = Request().check_exists(request_id)
+        if is_exists is False:
+            return (False, "This request does not exist!", 404)
+        sql = u"UPDATE requests SET status='disapproved' WHERE request_id = %s;"
+        values = (request_id,)
+        execute_query(sql, values)
+        
+        result = {
+            "message": "Request disapproved successfully",
+            "request_id": request_id
+        }
+        return (True, result)
+
+    def resolve(self, request_id):
+        """ admin resolve request"""
+        is_exists = Request().check_exists(request_id)
+        if is_exists is False:
+            return (False, "This request does not exist!", 404)
+        sql = u"UPDATE requests SET status='resolved' WHERE request_id = %s;"
+        values = (request_id,)
+        execute_query(sql, values)
+        
+        result = {
+            "message": "Request resolved successfully",
+            "request_id": request_id
+        }
+        return (True, result)
+
+    def get_all_requests(self):
         """ get request by id"""
         sql = u"SELECT * FROM requests;"
         requests = fetch_all(sql)
         if not requests:
-            return (False, "This request does not exist!", 404)
+            return (False, "No requests exist!", 404)
         result = {}
         for request in requests:
             result[request[0]] = {
@@ -209,8 +142,7 @@ class Request():
             }
         return (True, result)
 
-    @staticmethod
-    def admin_get_by_id(request_id):
+    def get_request_by_id(self, request_id):
         """ get request by id"""
         sql = u"SELECT * FROM requests WHERE request_id = %s;"
         values = (request_id,)
@@ -226,48 +158,148 @@ class Request():
             "created_at": request[7]
         }
         return (True, result)
+    
+class NormalUser(User):
+    """ normal user class ie. has no admin priviledges """
+    def __init__(self):
+        User.__init__(self)
+    
+    def make_request(self, title, description, category):
+        """ user create request """
+        request = Request(title, description, category)
+        return request.create()
 
-    @staticmethod
-    def admin_approve(request_id):
-        """ admin approve request"""
-        sql = u"UPDATE requests SET status='pending' WHERE request_id = %s \
-                RETURNING ('request_id');"
-        values = (request_id,)
-        request = execute_query(sql, values)
+    def update_request(self, request_id, title, description, category):
+        """ user update request """
+        request = Request(title, description, category, request_id)
+        return request.update()
+        
+    def get_requests(self):
+        """ get user requests """
+        return Request().get_user_requests()
+
+    def get_request_by_id(self, request_id):
+        """ get user request by id """
+        return Request().get_by_id(request_id)
+
+class SuperAdmin(User):
+    """ class for admin who creates other admins """
+    def __init__(self):
+        User.__init__(self)
+
+    def create(self, fname, lname, email, password):
+        """ create admin account """
+        return self.signup(fname, lname, email, password, is_admin="1") 
+
+class Request():
+    """ the requests model """
+
+    def __init__(self, title=None, description=None, category=None, request_id=None):
+        """initialize instance variables """
+        self.title = title
+        self.description = description
+        self.category = category
+        self.request_id = request_id
+
+    def create(self):
+        """ save request """
+        # check if a similar open or pending request exists for the user
+        db = DBConnect()
+        cursor = db.connect()
+        # check if email taken
+        try:
+            sql = u"SELECT * FROM requests where user_id = %s and \
+                            title = %s and (status = 'pending' \
+                            or status = 'open') and type = %s;"
+            values = (session['user_id'], self.title, self.category,)
+            requests = fetch_one(sql, values)
+
+            if requests:
+                result = (False,
+                          "Request already exists, wait for resolution!")
+            else:
+                cursor.execute(u"INSERT INTO requests(user_id, type, title,\
+                            description, created_at, updated_at, status)\
+                           VALUES(%s, %s, %s, %s, current_timestamp, \
+                           current_timestamp, 'open') \
+                           RETURNING request_id;",
+                               (session['user_id'], self.category, self.title, 
+                               self.description,))
+                db.conn.commit()
+                res_id = cursor.fetchone()[0]
+                result = (True, res_id)
+        except Exception:
+            result = (False)
+        return result
+
+    def get_user_requests(self):
+        """ get my requests """
+        sql = "SELECT * FROM requests where user_id = %s;"
+        values = (session['user_id'],)
+        requests = fetch_all(sql, values)
+
+        if not requests:
+            result = False
+        else:
+            result = {}
+            for request in requests:
+                result[request[0]] = {
+                    "title": request[5],
+                    "description": request[6],
+                    "type": request[4],
+                    "status": request[3],
+                    "resolved_at": request[9],
+                    "created_at": request[7]
+                }
+        return result
+
+    def update(self):
+        """ update request """
+        # check if request exists
+        sql = u"SELECT * FROM requests where request_id = %s;"
+        values = (self.request_id,)
+        res = fetch_one(sql, values)
+        if not res:
+            result = (False, "This request does not exist!", 404)
+        else:
+            if res[1] != session['user_id']:
+                result = (
+                    False, "You can only update your own requests", 401)
+            elif res[3] != 'open':
+                result = (
+                    False, "Editing this request is not allowed", 403)
+            else:
+                sql = u"UPDATE requests SET title=%s, description=%s,\
+                        type=%s, updated_at=current_timestamp \
+                        WHERE request_id=%s;"
+                values = (self.title, self.description, self.category, 
+                            self.request_id,)
+                res = execute_query(sql, values)
+                result = (True, values)
+        return result
+
+    def get_by_id(self, request_id):
+        """ get user request by id"""
+        sql = u"SELECT * FROM requests WHERE request_id = %s AND user_id = %s;"
+        values = (request_id, session['user_id'],)
+        request = fetch_one(sql, values)
         if not request:
-            return (False, "This request does not exist!", 404)
+            return (False, "Request id not found.", 404)
         result = {
-            "message": "Request approved successfully",
-            "request_id": request
+            "title": request[5],
+            "description": request[6],
+            "type": request[4],
+            "status": request[3],
+            "resolved_at": request[9],
+            "created_at": request[7]
         }
         return (True, result)
-
-    @staticmethod
-    def admin_disapprove(request_id):
-        """ admin disapprove request """
-        sql = u"UPDATE requests SET status='disapproved' WHERE request_id = %s \
-                RETURNING ('request_id');"
+    
+    def check_exists(self, request_id):
+        """ get any request by id"""
+        sql = u"SELECT * FROM requests WHERE request_id = %s;"
         values = (request_id,)
-        request = execute_query(sql, values)
+        request = fetch_one(sql, values)
         if not request:
-            return (False, "This request does not exist!", 404)
-        result = {
-            "message": "Request disapproved successfully",
-            "request_id": request
-        }
-        return (True, result)
-
-    @staticmethod
-    def admin_resolve(request_id):
-        """ admin resolve request"""
-        sql = u"UPDATE requests SET status='resolved' WHERE request_id = %s \
-                RETURNING ('request_id');"
-        values = (request_id,)
-        request = execute_query(sql, values)
-        if not request:
-            return (False, "This request does not exist!", 404)
-        result = {
-            "message": "Request resolved successfully",
-            "request_id": request
-        }
-        return (True, result)
+            return False
+        return request

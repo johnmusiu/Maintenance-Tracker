@@ -3,7 +3,7 @@
     create tables
 """
 from api.db_connect import DBConnect
-
+from werkzeug.security import generate_password_hash
 
 def migration():
     try:
@@ -20,7 +20,7 @@ def migration():
             cursor.execute("DROP TYPE IF EXISTS req_type")
 
             # create table user sql statement
-            cursor.execute("CREATE TYPE is_admin AS ENUM('0', '1');")
+            cursor.execute("CREATE TYPE is_admin AS ENUM('0', '1', '2');")
             create_users = """CREATE TABLE users(
                                     user_id SERIAL PRIMARY KEY,
                                     first_name VARCHAR(25),
@@ -55,10 +55,15 @@ def migration():
             cursor.execute(create_requests)
             # persist the tables
             db.conn.commit()
+
+            # create a super admin
+            cursor.execute(u"Insert INTO users(first_name, last_name, email, password,\
+                    created_at, is_admin) Values('Super', 'Admin', 'admin@admin.tec',\
+                    %s, current_timestamp, '2');", (generate_password_hash('admin'),))
+            db.conn.commit()
             db.close_conn()
             return True
-    except Exception as ex:
-        print(ex)
+    except Exception:
         return False
 
 

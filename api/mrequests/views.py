@@ -2,7 +2,7 @@
 
 from . import mrequests
 from flask import request, jsonify, session
-from api.models import Request
+from api.models import NormalUser
 from ..wrappers import token_required, role_required
 
 
@@ -18,8 +18,7 @@ def requests():
         validation = validate_input(title, description, category)
         if validation is not True:
             return validation
-        result = Request().save(
-            session['user_id'], category, title, description)
+        result = NormalUser().make_request(title, description, category)
         if result[0] is False:
             response = jsonify({
                 'message': result[1]
@@ -37,7 +36,7 @@ def requests():
         return response
     elif request.method == "GET":
         # returns all requests made by a certain user
-        result = Request().get_all_my_requests(session['user_id'])
+        result = NormalUser().get_requests()
         if result is False:
             return jsonify(
                 {"message": "You have not made any requests yet!"}), 404
@@ -88,9 +87,7 @@ def update_request(request_id):
     if validation is not True:
         return validation
 
-    results = Request().update(session['user_id'], request_id, title,
-                               description, category)
-    print(results)
+    results = NormalUser().update_request(request_id, title, description, category)
     if results[0] is False:
         return jsonify({"message": results[1]}), results[2]
 
@@ -111,7 +108,7 @@ def update_request(request_id):
 def get_request_by_id(request_id):
     """ route to retrieve request by id """
     # returns all requests made by a certain user
-    result = Request().get_by_id(request_id)
+    result = NormalUser().get_request_by_id(request_id)
     if result[0] is False:
         return jsonify(
             {"message": result[1]}), result[2]

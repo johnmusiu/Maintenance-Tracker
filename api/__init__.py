@@ -19,7 +19,10 @@ def create_app(config_name):
     from api.mrequests.views import mrequests
     app.register_blueprint(mrequests)
 
-    from api.mrequests.admin import admin
-    app.register_blueprint(admin)
+    from api.mrequests.admin import admin_bp
+    app.register_blueprint(admin_bp)
+
+    from api.mrequests.super_admin import super_admin_bp
+    app.register_blueprint(super_admin_bp)
 
     return app
