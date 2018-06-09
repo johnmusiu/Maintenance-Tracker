@@ -18,7 +18,7 @@ class User():
         self.email = email
         self.password = str(password)
 
-    def signup(self, fname, lname, email, password):
+    def signup(self, fname, lname, email, password, is_admin="0"):
         """ define method to create an account"""
         # check if email taken
         sql = "SELECT * FROM users where email = %s;"
@@ -28,9 +28,9 @@ class User():
             password = generate_password_hash(password)
             sql = u"INSERT INTO users(first_name, last_name,\
                             email, password, is_admin) \
-                            VALUES(%s, %s, %s, %s, '0');"
+                            VALUES(%s, %s, %s, %s, %s);"
 
-            values = (fname, lname, email, password,)
+            values = (fname, lname, email, password, is_admin,)
             execute_query(sql, values)
             result = (True, email, fname, lname)
         else:
@@ -82,43 +82,45 @@ class Admin(User):
     
     def approve(self, request_id):
         """ admin approve request"""
-        sql = u"UPDATE requests SET status='pending' WHERE request_id = %s \
-                RETURNING ('request_id');"
-        values = (request_id,)
-        request = execute_query(sql, values)
-        if not request:
+        is_exists = Request().check_exists(request_id)
+        if is_exists is False:
             return (False, "This request does not exist!", 404)
+        sql = u"UPDATE requests SET status='pending' WHERE request_id = %s;"
+        values = (request_id,)
+        execute_query(sql, values)
         result = {
             "message": "Request approved successfully",
-            "request_id": request
+            "request_id": request_id
         }
         return (True, result)
 
     def disapprove(self, request_id):
         """ admin disapprove request """
-        sql = u"UPDATE requests SET status='disapproved' WHERE request_id = %s \
-                RETURNING ('request_id');"
-        values = (request_id,)
-        request = execute_query(sql, values)
-        if not request:
+        is_exists = Request().check_exists(request_id)
+        if is_exists is False:
             return (False, "This request does not exist!", 404)
+        sql = u"UPDATE requests SET status='disapproved' WHERE request_id = %s;"
+        values = (request_id,)
+        execute_query(sql, values)
+        
         result = {
             "message": "Request disapproved successfully",
-            "request_id": request
+            "request_id": request_id
         }
         return (True, result)
 
     def resolve(self, request_id):
         """ admin resolve request"""
-        sql = u"UPDATE requests SET status='resolved' WHERE request_id = %s \
-                RETURNING ('request_id');"
-        values = (request_id,)
-        request = execute_query(sql, values)
-        if not request:
+        is_exists = Request().check_exists(request_id)
+        if is_exists is False:
             return (False, "This request does not exist!", 404)
+        sql = u"UPDATE requests SET status='resolved' WHERE request_id = %s;"
+        values = (request_id,)
+        execute_query(sql, values)
+        
         result = {
             "message": "Request resolved successfully",
-            "request_id": request
+            "request_id": request_id
         }
         return (True, result)
 
@@ -127,7 +129,7 @@ class Admin(User):
         sql = u"SELECT * FROM requests;"
         requests = fetch_all(sql)
         if not requests:
-            return (False, "This request does not exist!", 404)
+            return (False, "No requests exist!", 404)
         result = {}
         for request in requests:
             result[request[0]] = {
@@ -179,7 +181,16 @@ class NormalUser(User):
     def get_request_by_id(self, request_id):
         """ get user request by id """
         return Request().get_by_id(request_id)
-        
+
+class SuperAdmin(User):
+    """ class for admin who creates other admins """
+    def __init__(self):
+        User.__init__(self)
+
+    def create(self, fname, lname, email, password):
+        """ create admin account """
+        return self.signup(fname, lname, email, password, is_admin="1") 
+
 class Request():
     """ the requests model """
 
@@ -283,3 +294,12 @@ class Request():
             "created_at": request[7]
         }
         return (True, result)
+    
+    def check_exists(self, request_id):
+        """ get any request by id"""
+        sql = u"SELECT * FROM requests WHERE request_id = %s;"
+        values = (request_id,)
+        request = fetch_one(sql, values)
+        if not request:
+            return False
+        return request
