@@ -12,10 +12,10 @@ from ..wrappers import token_required, role_required
 def requests():
     # returns all requests
     result = Admin().get_all_requests()
-    if result is False:
+    if result[0] is False:
         return jsonify(
             {"message": "There are no requests yet!"}), 404
-    response = jsonify(result)
+    response = jsonify(result[1])
     return response, 200
 
 
@@ -25,7 +25,7 @@ def requests():
 def request_by_id(request_id):
     # returns all requests
     result = Admin().get_request_by_id(request_id)
-    if result is False:
+    if result[0] is False:
         return jsonify(
             {"message": "There are no requests yet!"}), 404
     response = jsonify(result[1])
@@ -38,9 +38,9 @@ def request_by_id(request_id):
 def approve(request_id):
     # returns all requests
     result = Admin().approve(request_id)
-    if result is False:
+    if result[0] is False:
         return jsonify(
-            {"message": "There are no requests yet!"}), 404
+            {"message": result[1]}), result[2]
     response = jsonify(result[1])
     return response, 200
 
@@ -51,7 +51,7 @@ def approve(request_id):
 def disapprove(request_id):
     # returns all requests
     result = Admin().disapprove(request_id)
-    if result is False:
+    if result[0] is False:
         return jsonify(
             {"message": "There are no requests yet!"}), 404
     response = jsonify(result[1])
@@ -64,7 +64,7 @@ def disapprove(request_id):
 def resolve(request_id):
     # returns all requests
     result = Admin().resolve(request_id)
-    if result is False:
+    if result[0] is False:
         return jsonify(
             {"message": "There are no requests yet!"}), 404
     response = jsonify(result[1])
