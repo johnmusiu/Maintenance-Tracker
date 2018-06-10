@@ -2,20 +2,19 @@
 
 [![Build Status](https://travis-ci.org/johnmusiu/Maintenance-Tracker.svg?branch=develop-api)](https://travis-ci.org/johnmusiu/Maintenance-Tracker)
 [![Coverage Status](https://coveralls.io/repos/github/johnmusiu/Maintenance-Tracker/badge.svg?branch=develop)](https://coveralls.io/github/johnmusiu/Maintenance-Tracker?branch=develop)
-[![Maintainability](https://api.codeclimate.com/v1/badges/4d649eb38dcc5e32f55d/maintainability)](https://codeclimate.com/github/johnmusiu/Maintenance-Tracker/maintainability)
 
 Maintenance Tracker App is an application that gives users the ability to reach out to operations/repairs department regarding repair or maintenance requests and monitor the status of their request.
 
 ## Hosted versions of the API
 
-- [Heroku]()
-- [Documentation]()
+- [Heroku](https://gentle-sands-32555.herokuapp.com)
+- [Documentation](https://maintrak.docs.apiary.io/)
 
 ## API Endpoints
 
 **Base url: `/api/v2`**
 
-| EndPoint | Functionality |Note|
+| Request Type | Endpoint |Note|
 |----------|---------------|----|
 | POST | `/auth/signup` | Register a user. |
 | POST | `/auth/login` | Login a user. |
