@@ -7,16 +7,21 @@ import psycopg2
 
 
 class DBConnect():
+    """ class contains db connection URL """
     def __init__(self):
         """initialize db instance"""
 
     def connect(self):
         """ create a db conn object """
         try:
-            self.conn = psycopg2.connect(dbname=os.getenv("DB_NAME"),
-                                         user=os.getenv("DB_USER"),
-                                         host='localhost',
-                                         password=os.getenv("DB_PASSWORD"))
+            if os.getenv("FLASK_CON") == "development":
+                self.conn = psycopg2.connect(
+                                 dbname=os.getenv("DB_NAME"),
+                                 user=os.getenv("DB_USER"),
+                                 host='localhost',
+                                 password=os.getenv("DB_PASSWORD"))
+            elif os.getenv("FLASK_CON") == "production":
+                self.conn = psycopg2.connect(os.getenv("DATABASE_URL"))
             self.cursor = self.conn.cursor()
             return self.cursor
         except Exception:

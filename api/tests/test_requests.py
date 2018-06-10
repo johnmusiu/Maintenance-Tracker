@@ -37,12 +37,12 @@ class TestAPIRequests(unittest.TestCase):
 
 	def get_header(self):
 		""" helper method to generate token """
-		response = self.app_client().post('/api/v1/auth/register',
+		response = self.app_client().post('/api/v2/auth/register',
                                           data=json.dumps(self.sample_user),
                                           content_type="application/json")
 		self.assertEqual(response.status_code, 201)
 
-		response = self.app_client().post('/api/v1/auth/login',
+		response = self.app_client().post('/api/v2/auth/login',
                                           data=json.dumps(self.sample_user),
                                           content_type="application/json")
 		result = json.loads(response.data)
@@ -54,7 +54,7 @@ class TestAPIRequests(unittest.TestCase):
 		"""
         Test requests endpoint if user provides not token
         """
-		response = self.app_client().get('/api/v1/users/requests',
+		response = self.app_client().get('/api/v2/users/requests',
                                          content_type='application/json')
 		result = json.loads(response.data)
 		self.assertEqual(result["message"],
@@ -69,7 +69,7 @@ class TestAPIRequests(unittest.TestCase):
         """
 		headers = self.get_header()
 		response = self.app_client().post(
-            '/api/v1/users/requests', data=json.dumps(self.sample_request),
+            '/api/v2/users/requests', data=json.dumps(self.sample_request),
             content_type="application/json", headers=headers)
 		result = json.loads(response.data)
 		self.assertEqual(
@@ -87,7 +87,7 @@ class TestAPIRequests(unittest.TestCase):
         # test for null title
 		self.sample_request['title'] = ""
 		response = self.app_client().post(
-            '/api/v1/users/requests', data=json.dumps(self.sample_request),
+            '/api/v2/users/requests', data=json.dumps(self.sample_request),
             content_type="application/json", headers=headers)
 		result = json.loads(response.data)
 		self.assertEqual(result["message"],
@@ -98,7 +98,7 @@ class TestAPIRequests(unittest.TestCase):
 		self.sample_request['title'] = "Fix mouses"
 		self.sample_request['description'] = ""
 		response = self.app_client().post(
-            '/api/v1/users/requests', data=json.dumps(self.sample_request),
+            '/api/v2/users/requests', data=json.dumps(self.sample_request),
 		    content_type="application/json", headers=headers)
 		result = json.loads(response.data)
 		self.assertEqual(result["message"],
@@ -109,7 +109,7 @@ class TestAPIRequests(unittest.TestCase):
 		self.sample_request['description'] = "mouses in lab 2 not working"
 		self.sample_request['type'] = ""
 		response = self.app_client().post(
-            '/api/v1/users/requests', data=json.dumps(self.sample_request),
+            '/api/v2/users/requests', data=json.dumps(self.sample_request),
 		     content_type="application/json", headers=headers)
 		result = json.loads(response.data)
 		self.assertEqual(result["message"], "Please fill in the 'type' field.")
@@ -124,7 +124,7 @@ class TestAPIRequests(unittest.TestCase):
 
 		self.sample_request['type'] = "Another type"
 		response = self.app_client().post(
-			'/api/v1/users/requests', data=json.dumps(self.sample_request),
+			'/api/v2/users/requests', data=json.dumps(self.sample_request),
 			content_type="application/json", headers=headers)
 		result = json.loads(response.data)
 		self.assertEqual(result["message"],
@@ -137,7 +137,7 @@ class TestAPIRequests(unittest.TestCase):
 		""" test user can update a request that is not resolved """
 		headers = self.get_header()
 		response = self.app_client().post(
-			'/api/v1/users/requests', data=json.dumps(self.sample_request),
+			'/api/v2/users/requests', data=json.dumps(self.sample_request),
             content_type='application/json', headers=headers)
 		self.assertEqual(response.status_code, 201)
 		result = json.loads(response.data)
@@ -146,7 +146,7 @@ class TestAPIRequests(unittest.TestCase):
 		self.sample_request['description'] =\
             "Mouses and keyboards in lab 2 not working"
 		response1 = self.app_client().put(
-			'/api/v1/users/requests/{}'.format(result.get('request_id')),
+			'/api/v2/users/requests/{}'.format(result.get('request_id')),
             data=json.dumps(self.sample_request), content_type='application/json',
             headers=headers)
 
@@ -164,7 +164,7 @@ class TestAPIRequests(unittest.TestCase):
 		headers = self.get_header()
         # insert request
 		response = self.app_client().post(
-			'/api/v1/users/requests', data=json.dumps(self.sample_request),
+			'/api/v2/users/requests', data=json.dumps(self.sample_request),
             content_type="application/json", headers=headers)
 		result = json.loads(response.data)
 		self.assertEqual(response.status_code, 201)
@@ -172,7 +172,7 @@ class TestAPIRequests(unittest.TestCase):
         # test for null title
 		self.sample_request['title'] = ""
 		response = self.app_client().put(
-			'/api/v1/users/requests/1', data=json.dumps(self.sample_request),
+			'/api/v2/users/requests/1', data=json.dumps(self.sample_request),
             content_type="application/json", headers=headers)
 		result = json.loads(response.data)
 		self.assertEqual(result["message"],
@@ -183,7 +183,7 @@ class TestAPIRequests(unittest.TestCase):
 		self.sample_request['title'] = "Fix mouses"
 		self.sample_request['description'] = ""
 		response = self.app_client().put(
-			'/api/v1/users/requests/1', data=json.dumps(self.sample_request),
+			'/api/v2/users/requests/1', data=json.dumps(self.sample_request),
             content_type="application/json", headers=headers)
 		result = json.loads(response.data)
 		self.assertEqual(result["message"],
@@ -194,7 +194,7 @@ class TestAPIRequests(unittest.TestCase):
 		self.sample_request['description'] = "mouses in lab 2 not working"
 		self.sample_request['type'] = ""
 		response = self.app_client().put(
-			'/api/v1/users/requests/1', data=json.dumps(self.sample_request),
+			'/api/v2/users/requests/1', data=json.dumps(self.sample_request),
             content_type="application/json", headers=headers)
 		result = json.loads(response.data)
 		self.assertEqual(result["message"], "Please fill in the 'type' field.")
@@ -208,7 +208,7 @@ class TestAPIRequests(unittest.TestCase):
 		headers = self.get_header()
 		self.sample_request['type'] = "Another type"
 		response = self.app_client().post(
-			'/api/v1/users/requests', data=json.dumps(self.sample_request),
+			'/api/v2/users/requests', data=json.dumps(self.sample_request),
 			content_type="application/json", headers=headers)
 		result = json.loads(response.data)
 		self.assertEqual(
@@ -226,7 +226,7 @@ class TestAPIRequests(unittest.TestCase):
 		headers = self.get_header()
 		# test fetching a request entry that doesn't exist
 		response = self.app_client().get(
-			'/api/v1/users/requests/1', data=json.dumps(self.sample_request),
+			'/api/v2/users/requests/1', data=json.dumps(self.sample_request),
 			content_type='application/json', headers=headers)
 		result = json.loads(response.data)
 		self.assertEqual(response.status_code, 404)
@@ -234,12 +234,12 @@ class TestAPIRequests(unittest.TestCase):
 
 		# add request, and try to fetch request id 1
 		response1 = self.app_client().post(
-			'/api/v1/users/requests', data=json.dumps(self.sample_request),
+			'/api/v2/users/requests', data=json.dumps(self.sample_request),
 			content_type='application/json', headers=headers)
 		self.assertEqual(response1.status_code, 201)
 		result = json.loads(response1.data)
 		response2 = self.app_client().get(
-			'/api/v1/users/requests/{}'.format(result.get('request_id')),
+			'/api/v2/users/requests/{}'.format(result.get('request_id')),
 			headers=headers)
 		result2 = json.loads(response2.data)
 		self.assertEqual(response2.status_code, 200)
@@ -255,7 +255,7 @@ class TestAPIRequests(unittest.TestCase):
 		headers = self.get_header()
 		# test fetching a requests for user who has not submited any requests
 		response = self.app_client().get(
-			'/api/v1/users/requests', headers=headers)
+			'/api/v2/users/requests', headers=headers)
 		result = json.loads(response.data)
 		self.assertEqual(response.status_code, 404)
 		self.assertEqual(
@@ -263,12 +263,12 @@ class TestAPIRequests(unittest.TestCase):
 
 		# insert request
 		response1 = self.app_client().post(
-			'/api/v1/users/requests', data=json.dumps(self.sample_request),
+			'/api/v2/users/requests', data=json.dumps(self.sample_request),
 			content_type='application/json', headers=headers)
 		self.assertEqual(response1.status_code, 201)
 
 		response = self.app_client().get(
-			'/api/v1/users/requests', headers=headers)
+			'/api/v2/users/requests', headers=headers)
 		result = json.loads(response.data)
 		self.assertEqual(response.status_code, 200)
 		self.assertIn("Fix mouses", str(result))

@@ -55,19 +55,19 @@ class TestAdmin(unittest.TestCase):
     def get_token_admin(self):
         """ create and login admin to get token """
         # login super admin
-        response = self.app_client.post('/api/v1/auth/login',
+        response = self.app_client.post('/api/v2/auth/login',
                                         data=json.dumps({'email': 'admin@admin.tec',
                                                'password': 'admin'}),
                                         content_type="application/json")
         result = json.loads(response.data)
         headers = {'access-token': result['access-token']}
 
-        response = self.app_client.post('/api/v1/admin', 
+        response = self.app_client.post('/api/v2/admin', 
                                         data=json.dumps(self.sample_admin),
                                         content_type="application/json",
                                         headers=headers)
         
-        response = self.app_client.post('/api/v1/auth/login',
+        response = self.app_client.post('/api/v2/auth/login',
                                         data=json.dumps(self.sample_admin),
                                         content_type="application/json")
         result = json.loads(response.data)        
@@ -75,21 +75,21 @@ class TestAdmin(unittest.TestCase):
 
     def insert_requests(self):
         """ helper method to insert request to db """
-        response = self.app_client.post('/api/v1/auth/register',
+        response = self.app_client.post('/api/v2/auth/register',
                                           data=json.dumps(self.sample_user),
                                           content_type="application/json")
 
-        response = self.app_client.post('/api/v1/auth/login',
+        response = self.app_client.post('/api/v2/auth/login',
                                           data=json.dumps(self.sample_user),
                                           content_type="application/json")
         result = json.loads(response.data)
         headers = {'access-token': result['access-token']}
 
-        response = self.app_client.post('/api/v1/users/requests',
+        response = self.app_client.post('/api/v2/users/requests',
                                           data=json.dumps(self.sample_request),
                                           content_type="application/json",
                                           headers=headers)
-        response = self.app_client.post('/api/v1/users/requests',
+        response = self.app_client.post('/api/v2/users/requests',
                                           data=json.dumps(self.sample_request2),
                                           content_type="application/json",
                                           headers=headers)
@@ -97,7 +97,7 @@ class TestAdmin(unittest.TestCase):
     def test_create_admin(self):
         """ test whether super admin can create admin """
         # login super admin
-        response = self.app_client.post('/api/v1/auth/login',
+        response = self.app_client.post('/api/v2/auth/login',
                                         data=json.dumps({'email': 'admin@admin.tec',
                                                'password': 'admin'}),
                                         content_type="application/json")
@@ -106,7 +106,7 @@ class TestAdmin(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         headers = {'access-token': access_token}
 
-        response = self.app_client.post('/api/v1/admin', 
+        response = self.app_client.post('/api/v2/admin', 
                                         data=json.dumps(self.sample_admin),
                                         content_type="application/json",
                                         headers=headers)
@@ -119,20 +119,20 @@ class TestAdmin(unittest.TestCase):
         headers = self.get_token_admin() 
 
         # try fetch while no requests exist
-        response1 = self.app_client.get('/api/v1/requests', headers=headers)
+        response1 = self.app_client.get('/api/v2/requests', headers=headers)
         self.assertEqual(response1.status_code, 404)
 
         #try fetch by id no requests
-        response1 = self.app_client.get('/api/v1/requests/1', headers=headers)
+        response1 = self.app_client.get('/api/v2/requests/1', headers=headers)
         self.assertEqual(response1.status_code, 404)
         self.insert_requests()
 
         #test admin get by ID
-        response = self.app_client.get('/api/v1/requests/1', headers=headers)
+        response = self.app_client.get('/api/v2/requests/1', headers=headers)
         self.assertEqual(response.status_code, 200)
 
         #test admin get all
-        response = self.app_client.get('/api/v1/requests', headers=headers)
+        response = self.app_client.get('/api/v2/requests', headers=headers)
         self.assertEqual(response.status_code, 200)
     
     def test_admin_approve_request(self):
@@ -142,13 +142,13 @@ class TestAdmin(unittest.TestCase):
         headers = self.get_token_admin() 
 
         # try approve while request does not exist
-        response1 = self.app_client.put('/api/v1/requests/1/approve', headers=headers)
+        response1 = self.app_client.put('/api/v2/requests/1/approve', headers=headers)
         self.assertEqual(response1.status_code, 404)
 
         self.insert_requests()
 
         #test approve while ID exists
-        response = self.app_client.put('/api/v1/requests/1/approve', headers=headers)
+        response = self.app_client.put('/api/v2/requests/1/approve', headers=headers)
         print(response)
         self.assertEqual(response.status_code, 200)
 
@@ -159,13 +159,13 @@ class TestAdmin(unittest.TestCase):
         headers = self.get_token_admin() 
 
         # try disapprove while request does not exist
-        response1 = self.app_client.put('/api/v1/requests/1/disapprove', headers=headers)
+        response1 = self.app_client.put('/api/v2/requests/1/disapprove', headers=headers)
         self.assertEqual(response1.status_code, 404)
 
         self.insert_requests()
 
         #test disapprove while ID exists
-        response = self.app_client.put('/api/v1/requests/1/disapprove', headers=headers)
+        response = self.app_client.put('/api/v2/requests/1/disapprove', headers=headers)
         print(response)
         self.assertEqual(response.status_code, 200)
 
@@ -176,13 +176,13 @@ class TestAdmin(unittest.TestCase):
         headers = self.get_token_admin() 
 
         # try resolve while request does not exist
-        response1 = self.app_client.put('/api/v1/requests/1/resolve', headers=headers)
+        response1 = self.app_client.put('/api/v2/requests/1/resolve', headers=headers)
         self.assertEqual(response1.status_code, 404)
 
         self.insert_requests()
 
         #test resolve while ID exists
-        response = self.app_client.put('/api/v1/requests/1/resolve', headers=headers)
+        response = self.app_client.put('/api/v2/requests/1/resolve', headers=headers)
         print(response)
         self.assertEqual(response.status_code, 200)
         
