@@ -81,15 +81,16 @@ def register_validation(fname, lname, email, password, confirm_password):
                 'pasword': """Password must contain uppercase and lowercase letters,
                         digits and be have min-lenght of 6"""
             })
-        # check if password matches confirm password
-        if password != confirm_password:
-            response = jsonify({
-                'message': 'Password and confirm password mismatch'
-            })
+        
         if response is not True:
             response.status_code = 400
         return response
-    
+    # check if password matches confirm password
+    if password != confirm_password:
+        response = jsonify({
+            'message': 'Password and confirm password mismatch'
+        })
+        response.status_code = 400
     return response
 
 
