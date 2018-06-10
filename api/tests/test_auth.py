@@ -36,7 +36,7 @@ class TestAPIAuth(unittest.TestCase):
         """
             Test API user signup with all details provided correct
         """
-        response = self.app_client.post('/api/v1/auth/register',
+        response = self.app_client.post('/api/v2/auth/register',
                                         data=json.dumps(self.sample_user),
                                         content_type="application/json")
         result = json.loads(response.data)
@@ -48,7 +48,7 @@ class TestAPIAuth(unittest.TestCase):
         """ test user signup given email/name/password provided is null """
         # test with empty email
         self.sample_user['email'] = ""
-        response1 = self.app_client.post('/api/v1/auth/register',
+        response1 = self.app_client.post('/api/v2/auth/register',
                                          data=json.dumps(self.sample_user),
                                          content_type="application/json")
         result1 = json.loads(response1.data)
@@ -59,7 +59,7 @@ class TestAPIAuth(unittest.TestCase):
         # test with empty name
         self.sample_user['email'] = "bob@example.com"
         self.sample_user['first_name'] = ""
-        response2 = self.app_client.post('/api/v1/auth/register',
+        response2 = self.app_client.post('/api/v2/auth/register',
                                          data=json.dumps(self.sample_user),
                                          content_type="application/json")
         result2 = json.loads(response2.data)
@@ -70,7 +70,7 @@ class TestAPIAuth(unittest.TestCase):
         # test with empty password
         self.sample_user['first_name'] = "Bob"
         self.sample_user['password'] = ""
-        response3 = self.app_client.post('/api/v1/auth/register',
+        response3 = self.app_client.post('/api/v2/auth/register',
                                          data=json.dumps(self.sample_user),
                                          content_type="application/json")
         result3 = json.loads(response3.data)
@@ -81,7 +81,7 @@ class TestAPIAuth(unittest.TestCase):
     def test_signup_invalid_email(self):
         """ Test if user signup is done using an invalid email address"""
         self.sample_user['email'] = "invalid====email@email.com"
-        response = self.app_client.post('/api/v1/auth/register',
+        response = self.app_client.post('/api/v2/auth/register',
                                         data=json.dumps(self.sample_user),
                                         content_type="application/json")
         result = json.loads(response.data)
@@ -97,7 +97,7 @@ class TestAPIAuth(unittest.TestCase):
         """
         # test invalid name
         self.sample_user['first_name'] = "$Bob &Burgers"
-        response = self.app_client.post('/api/v1/auth/register',
+        response = self.app_client.post('/api/v2/auth/register',
                                         data=json.dumps(self.sample_user),
                                         content_type="application/json")
         result = json.loads(response.data)
@@ -107,7 +107,7 @@ class TestAPIAuth(unittest.TestCase):
         # test invalid email
         self.sample_user['first_name'] = "Bob"
         self.sample_user['email'] = "1bob@example.com"
-        response = self.app_client.post('/api/v1/auth/register',
+        response = self.app_client.post('/api/v2/auth/register',
                                         data=json.dumps(self.sample_user),
                                         content_type="application/json")
         result = json.loads(response.data)
@@ -119,7 +119,7 @@ class TestAPIAuth(unittest.TestCase):
         """ test signup using a weak password """
 
         self.sample_user['password'] = "weakpasshere"
-        response = self.app_client.post('/api/v1/auth/register',
+        response = self.app_client.post('/api/v2/auth/register',
                                         data=json.dumps(self.sample_user),
                                         content_type="application/json")
         result = json.loads(response.data)
@@ -134,12 +134,12 @@ class TestAPIAuth(unittest.TestCase):
             Test API user signin with correct credentials
         """
 
-        response = self.app_client.post('/api/v1/auth/register',
+        response = self.app_client.post('/api/v2/auth/register',
                                         data=json.dumps(self.sample_user),
                                         content_type="application/json")
         self.assertEqual(response.status_code, 201)
 
-        response = self.app_client.post('/api/v1/auth/login',
+        response = self.app_client.post('/api/v2/auth/login',
                                         data=json.dumps(self.sample_user),
                                         content_type="application/json")
         result = json.loads(response.data)
@@ -151,13 +151,13 @@ class TestAPIAuth(unittest.TestCase):
         """
             Test API user signin with incorrect credentials
         """
-        response = self.app_client.post('/api/v1/auth/register',
+        response = self.app_client.post('/api/v2/auth/register',
                                         data=json.dumps(self.sample_user),
                                         content_type="application/json")
         self.assertEqual(response.status_code, 201)
 
         self.sample_user['email'] = "not_his@gmail.com"
-        response = self.app_client.post('/api/v1/auth/login',
+        response = self.app_client.post('/api/v2/auth/login',
                                         data=json.dumps(self.sample_user),
                                         content_type="application/json")
         result = json.loads(response.data)
@@ -169,7 +169,7 @@ class TestAPIAuth(unittest.TestCase):
         """ test user signin given email/password provided is null """
         # test with empty email
         self.sample_user['email'] = ""
-        response = self.app_client.post('/api/v1/auth/login',
+        response = self.app_client.post('/api/v2/auth/login',
                                         data=json.dumps(self.sample_user),
                                         content_type="application/json")
         result = json.loads(response.data)
@@ -180,7 +180,7 @@ class TestAPIAuth(unittest.TestCase):
         # test with empty password
         self.sample_user['email'] = "bob@example.com"
         self.sample_user['password'] = ""
-        response1 = self.app_client.post('/api/v1/auth/login',
+        response1 = self.app_client.post('/api/v2/auth/login',
                                          data=json.dumps(self.sample_user),
                                          content_type="application/json")
         result1 = json.loads(response1.data)
@@ -191,7 +191,7 @@ class TestAPIAuth(unittest.TestCase):
     def test_signin_invalid_email(self):
         """ Test user signin using an invalid email address"""
         self.sample_user['email'] = "bob@232"
-        response = self.app_client.post('/api/v1/auth/login',
+        response = self.app_client.post('/api/v2/auth/login',
                                         data=json.dumps(self.sample_user),
                                         content_type="application/json")
         result = json.loads(response.data)
