@@ -30,11 +30,18 @@ try:
     cursor.execute("CREATE DATABASE "+ db_name_test)
     db.conn.commit()
     db.close_conn()
+    file_env = open('.env', 'a+')
+    file_env.write("export DB_NAME='"+db_name+"'")
+    file_env.write("export DB_TEST='"+db_name_test+"'")
+    file_env.write("export DB_PASSWORD='"+password+"'")
+    file_env.close()
     print("Databases created successfully. \n 1: testing & 2: live ")
+    print("Added DB_NAME and DB_PASSWORD to .env file\n\n\n")
+    print("run 'source .env' to set environment variables\n\n\n")
     print("Goodbye")
 except Exception as ex:
     print("***************Error*************")
     print(ex)
-
+    
 
 
