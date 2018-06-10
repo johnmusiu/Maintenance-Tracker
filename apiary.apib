@@ -25,6 +25,7 @@ Maintenance Tracker App is an app that gives users the ability to reach out to o
 
 ## Register User [/auth/register]
 
+
 ### Any user can register on this endpoint [POST]
 + Request (application/json)
     
@@ -46,48 +47,48 @@ Maintenance Tracker App is an app that gives users the ability to reach out to o
 
 + Response 209 (application/json)
         
-            {
-                "message": "Email address already registered under another account"
-            }
+        {
+            "message": "Email address already registered under another account"
+        }
         
 + Response 400 (application/json)
 
-            {
-                "message": "Please fill in required password field!"
-            }
+        {
+            "message": "Please fill in required password field!"
+        }
             
 + Response 400 (application/json)
         
-            {
-                "message": "Please enter a strong password to signup!",
-                "pasword": "Password must contain uppercase and lowercase letters,digits and be have min-lenght of 6"
-            }
+        {
+            "message": "Please enter a strong password to signup!",
+            "pasword": "Password must contain uppercase and lowercase letters,digits and be have min-lenght of 6"
+        }
         
 + Response 400 (application/json)
         
-            {
-                "message": "Please enter a valid first_name!",
-                "last_name": "A valid name has only letters and no spaces."           
-            }
+        {
+            "message": "Please enter a valid first_name!",
+            "last_name": "A valid name has only letters and no spaces."           
+        }
 
 + Response 400 (application/json)
         
-            {
-                "message": "Please enter a valid name!",
-                "first_name": "A valid name has only letters and no spaces."           
-            }
+        {
+            "message": "Please enter a valid name!",
+            "first_name": "A valid name has only letters and no spaces."           
+        }
 
 + Response 400 (application/json)
 
-            {
-                "message": "Password and confirm password mismatch"
-            }
+        {
+            "message": "Password and confirm password mismatch"
+        }
 
 + Response 400 (application/json)
 
-            {
-                "message": "Please enter a valid email address!"
-            }
+        {
+            "message": "Please enter a valid email address!"
+        }
         
 # Group Login
 
@@ -99,8 +100,8 @@ Maintenance Tracker App is an app that gives users the ability to reach out to o
 + Request (application/json)
     
         {
-            'email': 'ndindi@gmail.com',
-            'password': "WEeu00t',
+            "email": "ndindi@gmail.com",
+            "password": "WEeu00t"
         }
     
 + Response 200 (application/json)
@@ -361,42 +362,42 @@ Maintenance Tracker App is an app that gives users the ability to reach out to o
         
 + Response 400 (application/json)
 
-            {
-                "message": "Please fill in required password field!"
-            }
+        {
+            "message": "Please fill in required password field!"
+        }
             
 + Response 400 (application/json)
         
-            {
-                "message": "Please enter a strong password to signup!",
-                "pasword": "Password must contain uppercase and lowercase letters,digits and be have min-lenght of 6"
-            }
-        
+        {
+            "message": "Please enter a strong password to signup!",
+            "pasword": "Password must contain uppercase and lowercase letters,digits and be have min-lenght of 6"
+        }
+    
 + Response 400 (application/json)
         
-            {
-                "message": "Please enter a valid first_name!",
-                "last_name": "A valid name has only letters and no spaces."           
-            }
+        {
+            "message": "Please enter a valid first_name!",
+            "last_name": "A valid name has only letters and no spaces."           
+        }
 
 + Response 400 (application/json)
         
-            {
-                "message": "Please enter a valid name!",
-                "first_name": "A valid name has only letters and no spaces."           
-            }
+        {
+            "message": "Please enter a valid name!",
+            "first_name": "A valid name has only letters and no spaces."           
+        }
 
 + Response 400 (application/json)
 
-            {
-                "message": "Password and confirm password mismatch"
-            }
+        {
+            "message": "Password and confirm password mismatch"
+        }
 
 + Response 400 (application/json)
 
-            {
-                "message": "Please enter a valid email address!"
-            }
+        {
+            "message": "Please enter a valid email address!"
+        }
 
 
 # Group Requests - Admin
