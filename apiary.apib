@@ -1,80 +1,528 @@
 FORMAT: 1A
-HOST: http://polls.apiblueprint.org/
+HOST: https://gentle-sands-32555.herokuapp.com/api/v2
 
 # Maintenance Tracker
 
-Polls is a simple API allowing consumers to view polls and vote in them.
+Maintenance Tracker App is an app that gives users the ability to reach out to operations/repairs department regarding repair or maintenance requests and monitor the status of their request.
 
-## Questions Collection [/questions]
+# Allowed HTTPs requests:
+1. `POST`    : To create resource
+2. `PUT`     : Update resource
+3. `GET`     : Get a resource or list of resources
 
-### List All Questions [GET]
+# Description Of Some Server Responses:
+- 200 `OK` - the request was successful (some API calls may return 201 instead).
+- 201 `Created` - the request was successful and a resource was created.
+- 204 `No Content` - the request was successful but there is no representation to return (i.e. the response is empty).
+- 400 `Bad Request` - the request could not be understood or was missing required parameters.
+- 401 `Unauthorized` - authentication failed or user doesn't have permissions for requested operation.
+- 403 `Forbidden` - access denied.
+- 404 `Not Found` - resource was not found.
+- 405 `Method Not Allowed` - requested method is not supported for resource.
 
-+ Response 200 (application/json)
 
-        [
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
-            }
-        ]
+# Group Register User
 
-### Create a New Question [POST]
+## Register User [/auth/register]
 
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
-
+### Any user can register on this endpoint [POST]
 + Request (application/json)
-
+    
         {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
-        }
+            "first_name": "Annie",
+            "last_name": "Ndindi",
+            "email": "ndindi@gmail.com",
+            "password": "WEeu00t",
+            "confirm_password": "WEeu00t"
+        }  
 
 + Response 201 (application/json)
+    
+        {
+            "email": "ndindi@gmail.com",
+            "message": "Registration successfull",
+            "name": "Annie Ndindi"
+        }
 
-    + Headers
-
-            Location: /questions/2
-
-    + Body
++ Response 209 (application/json)
+        
+            {
+                "message": "Email address already registered under another account"
+            }
+        
++ Response 400 (application/json)
 
             {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
+                "message": "Please fill in required password field!"
             }
+            
++ Response 400 (application/json)
+        
+            {
+                "message": "Please enter a strong password to signup!",
+                "pasword": "Password must contain uppercase and lowercase letters,digits and be have min-lenght of 6"
+            }
+        
++ Response 400 (application/json)
+        
+            {
+                "message": "Please enter a valid first_name!",
+                "last_name": "A valid name has only letters and no spaces."           
+            }
+
++ Response 400 (application/json)
+        
+            {
+                "message": "Please enter a valid name!",
+                "first_name": "A valid name has only letters and no spaces."           
+            }
+
++ Response 400 (application/json)
+
+            {
+                "message": "Password and confirm password mismatch"
+            }
+
++ Response 400 (application/json)
+
+            {
+                "message": "Please enter a valid email address!"
+            }
+        
+# Group Login
+
+## Login User [/auth/login]
+
+### Any user can login[POST]
+
+
++ Request (application/json)
+    
+        {
+            'email': 'ndindi@gmail.com',
+            'password': "WEeu00t',
+        }
+    
++ Response 200 (application/json)
+    
+        {
+            "access-token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1Mjg2MTczOTYsImlhdCI6MTUyODYxMzc5Niwic3ViIjoiYWRtaW5AYWRtaW4udGVjIiwidXNlcl9pZCI6MSwicm9sZSI6IjIifQ.6iNIuPy7kDRL3_WsBiLI-tTZtEI-nTVPJHT5ube5Zfw",
+            "message": "Login success, welcome!"
+        }
+        
++ Response 401 (application/json)
+    
+        {
+            "message": "Wrong login credentials provided!"
+        }
+          
++ Response 400 (application/json)
+
+            {
+                "message": "Please enter a valid email address!"
+            }
+
++ Response 400 (application/json)
+
+            {
+                "message": "Please fill in required password field!"
+            }
+            
++ Response 400 (application/json)
+
+            {
+                "message": "Please fill in required email field!"
+            }
+
+
+# Group Requests - User
+
+## User Request [/users/requests]
+
+### User create request [POST]
++ Request (application/json)
+    
+        {
+            "title": "Replace broken keyboard",
+            "description": "Unusable keybards in lab 2 need be replaced",
+            "type": "Maintenance"
+        }  
+
++ Response 201 (application/json)
+    
+        {
+            "description": "Unusable keybards in lab 2 need be replaced",
+            "message": "Maintenance request submitted successfully.",
+            "request_id": 1,
+            "status": "open",
+            "title": "Replace broken keyboard",
+            "type": "Maintenance"
+        }
+
+        
++ Response 403 (application/json)
+
+        {
+            "message": "Access Denied."
+        }
+
++ Response 209 (application/json)
+        
+        {
+            "message": "Request already exists, wait for resolution!"
+        }     
+
++ Response 400 (application/json)
+
+        {
+            "message": "Please fill in the 'title' field.""
+        }
+        
++ Response 400 (application/json)
+
+        {
+            "message": "Please fill in the 'description' field."
+        }
+        
++ Response 400 (application/json)
+
+        {
+            "message": "Please fill in the 'type' field."
+        }
+        
++ Response 401 (application/json)
+
+        {
+            "message": "Token is missing! Login to get token."
+        }
+
+### User view their requests [GET]
++ Response 403 (application/json)
+
+        {
+            "message": "Access Denied."
+        }
+        
++ Response 401 (application/json)
+
+        {
+            "message": "Token is missing! Login to get token."
+        }
+
++ Response 404 (application/json)
+
+        {
+            "message": "You have not made any requests yet!"
+        }
+        
++ Response 200 (application/json)       
+        
+        {
+            1": {
+            "created_at": "Sun, 10 Jun 2018 11:27:48 GMT",
+                "description": "Unusable keybards in lab 2 need be replaced",
+                "resolved_at": null,
+                "status": "open",
+                "title": "Replace broken keyboard",
+                "type": "Maintenance"
+            }
+            "2": {
+                "created_at": "Sun, 10 Jun 2018 11:34:22 GMT",
+                "description": "Set date already ellapsed",
+                "resolved_at": null,
+                "status": "open",
+                "title": "Clean computers",
+                "type": "Maintenance"
+            }
+        }
+    
+
+## User Actions on One Request [/users/requests/{id}]
+
+### Get a request by id [GET]
++ Response 200 (application/json)
+
+        {
+            "created_at": "Sun, 10 Jun 2018 11:27:48 GMT",
+            "description": "Unusable keybards in lab 2 need be replaced",
+            "resolved_at": null,
+            "status": "open",
+            "title": "Replace broken keyboard",
+            "type": "Maintenance"
+        }
+        
++ Response 403 (application/json)
+
+        {
+            "message": "Access Denied."
+        }
+        
++ Response 401 (application/json)
+
+        {
+            "message": "Token is missing! Login to get token."
+        }
+ 
++ Response 404 (application/json)
+
+        {
+            "message": "Request id not found."
+        }
+              
+### Update a request [PUT]
++ Request (application/json)
+    
+        {
+            "title": "Clean computers",
+            "description": "Scheduled date has passed",
+            "type": "Maintenance"
+        }  
+        
++ Response 200 (application/json)
+
+        {
+            "description": "Scheduled date has passed",
+            "message": "Maintenance request updated successfully.",
+            "request_id": 1,
+            "status": "open",
+            "title": "Clean computers",
+            "type": "Maintenance",
+            "user_id": 3
+        }
+
++ Response 404 (application/json)
+
+        {
+            "message": "This request does not exist!"
+        }
+
+        
++ Response 403 (application/json)
+
+        {
+            "message": "Access Denied."
+        }
+        
++ Response 401 (application/json)
+        
+        {
+            "message": "You can only update your own requests",
+        }
++ Response 401 (application/json)
+
+        {
+            "message": "Token is missing! Login to get token."
+        }
+        
++ Response 403 (application/json)
+        
+        {
+            "message": "Editing this request is not allowed",
+        }
+
+
+# Group Register Admin
+
+## Super Admin Create Admin [/admin]
+
+### Create admin account [POST]
++ Request (application/json)
+    
+        {
+            "first_name": "John",
+            "last_name": "Ngugi",
+            "email": "jngugi@gmail.com",
+            "password": "WEeu00t",
+            "confirm_password": "WEeu00t"
+        } 
+        
++ Response 201 (application/json)
+
+        {
+            "message": "Admin created successfully"
+        }
+        
++ Response 403 (application/json)
+
+        {
+            "message": "Access Denied."
+        }
+        
++ Response 401 (application/json)
+
+        {
+            "message": "Token is missing! Login to get token."
+        }
++ Response 209 (application/json)
+        
+            {
+                "message": "Email address already registered under another account"
+            }
+        
++ Response 400 (application/json)
+
+            {
+                "message": "Please fill in required password field!"
+            }
+            
++ Response 400 (application/json)
+        
+            {
+                "message": "Please enter a strong password to signup!",
+                "pasword": "Password must contain uppercase and lowercase letters,digits and be have min-lenght of 6"
+            }
+        
++ Response 400 (application/json)
+        
+            {
+                "message": "Please enter a valid first_name!",
+                "last_name": "A valid name has only letters and no spaces."           
+            }
+
++ Response 400 (application/json)
+        
+            {
+                "message": "Please enter a valid name!",
+                "first_name": "A valid name has only letters and no spaces."           
+            }
+
++ Response 400 (application/json)
+
+            {
+                "message": "Password and confirm password mismatch"
+            }
+
++ Response 400 (application/json)
+
+            {
+                "message": "Please enter a valid email address!"
+            }
+
+
+# Group Requests - Admin
+
+## Admin Get All [/requests]
+
+### Admin get all requests [GET]
++ Response 200 (application/json)
+         
+        {
+            1": {
+            "created_at": "Sun, 10 Jun 2018 11:27:48 GMT",
+                "description": "Unusable keybards in lab 2 need be replaced",
+                "resolved_at": null,
+                "status": "open",
+                "title": "Replace broken keyboard",
+                "type": "Maintenance"
+            }
+            "2": {
+                "created_at": "Sun, 10 Jun 2018 11:34:22 GMT",
+                "description": "Set date already ellapsed",
+                "resolved_at": null,
+                "status": "open",
+                "title": "Clean computers",
+                "type": "Maintenance"
+            }
+        }
+        
++ Response 403 (application/json)
+
+        {
+            "message": "Access Denied."
+        }
+        
++ Response 401 (application/json)
+
+        {
+            "message": "Token is missing! Login to get token."
+        }
+
++ Response 404 (application/json)
+
+        {
+            "message": "There are no requests yet!"
+        }
+
+## Admin Approve Request [/requests/{id}/approved]
+
+### Admin approve request [PUT]
++ Response 200 (application/json)
+
+        {
+            "message": "Request approved successfully",
+            "request_id": {id}
+        }
+        
++ Response 403 (application/json)
+
+        {
+            "message": "Access Denied."
+        }
+        
++ Response 401 (application/json)
+
+        {
+            "message": "Token is missing! Login to get token."
+        }
+
++ Response 404 (application/json)
+
+        {
+            "message": "There are no requests yet!"
+        }
+        
+## Admin Disapprove Request [/requests/{id}/disapproved]
+
+### Admin disapprove request [PUT]
++ Response 200 (application/json)
+
+        {
+            "message": "Request disapproved successfully",
+            "request_id": {id}
+        }
+        
++ Response 403 (application/json)
+
+        {
+            "message": "Access Denied."
+        }
+        
++ Response 401 (application/json)
+
+        {
+            "message": "Token is missing! Login to get token."
+        }
+
++ Response 404 (application/json)
+
+        {
+            "message": "There are no requests yet!"
+        }
+
+## Admin Resolve Request [/requests/{id}/resolve]
+
+### Admin resolve a request [PUT]
++ Response 200 (application/json)
+
+        {
+            "message": "Request resolved successfully",
+            "request_id": {id}
+        }
+        
++ Response 403 (application/json)
+
+        {
+            "message": "Access Denied."
+        }
+        
++ Response 401 (application/json)
+
+        {
+            "message": "Token is missing! Login to get token."
+        }
+
++ Response 404 (application/json)
+
+        {
+            "message": "There are no requests yet!"
+        }
