@@ -133,9 +133,18 @@ Note: You should have some basic working knowledge on the above
         "confirm_password": "WEeu00t"
     }  
     ```
-To test without setting up local environment send requests to `https://..` from postman.
+12. Testing admin functionality
 
-To test without postman visit the online documentation [here]()
+    The super admin is:
+            username: admin
+            password: admin
+    Login to get an access-token that can then be used to hit the `/admin` [POST] endpoint.
+    The same credentials can be used on the hosted documentation to create an admin.
+    After creating the admin you then have to login as an admin to have access to administrator privileges and functions.
+
+To test without setting up local environment send requests to `https://gentle-sands-32555.herokuapp.com/api/v2/{endpoint}`  from postman.
+
+To test without postman visit the online documentation [here](https://maintrak.docs.apiary.io/)
 
 ## Built With
 
