@@ -13,26 +13,28 @@ from .db_connect import DBConnect
 class User():
     """ the user model methods"""
 
-    def __init__(self, name=None, email=None, password=None):
-        self.name = name
+    def __init__(self, fname=None, lname=None, email=None, password=None, is_admin="0"):
+        self.fname = fname
+        self.lname = lname
         self.email = email
         self.password = str(password)
+        self.is_admin = is_admin
 
-    def signup(self, fname, lname, email, password, is_admin="0"):
+    def signup(self):
         """ define method to create an account"""
         # check if email taken
         sql = "SELECT * FROM users where email = %s;"
-        values = (email,)
+        values = (self.email,)
         user = fetch_one(sql, values)
         if not user:
-            password = generate_password_hash(password)
+            password = generate_password_hash(self.password)
             sql = u"INSERT INTO users(first_name, last_name,\
                             email, password, is_admin) \
                             VALUES(%s, %s, %s, %s, %s);"
 
-            values = (fname, lname, email, password, is_admin,)
+            values = (self.fname, self.lname, self.email, password, self.is_admin,)
             execute_query(sql, values)
-            result = (True, email, fname, lname)
+            result = (True, self.email, self.fname, self.lname)
         else:
             result = (
                 False,
@@ -44,7 +46,8 @@ class User():
         sql = u"SELECT * FROM users where email = %s;"
         values = (email,)
         user = fetch_one(sql, values)
-        if user is None:
+
+        if not user:
             return False
         else:
             if check_password_hash(user[4], password):
@@ -189,7 +192,8 @@ class SuperAdmin(User):
 
     def create(self, fname, lname, email, password):
         """ create admin account """
-        return self.signup(fname, lname, email, password, is_admin="1") 
+        user = User(fname, lname, email, password, is_admin="1")
+        return user.signup() 
 
 class Request():
     """ the requests model """

@@ -22,7 +22,8 @@ def register():
         return validation
 
     # now save user to db
-    result = User().signup(fname, lname, email, password)
+    user = User(fname, lname, email, password)
+    result = user.signup()
 
     if result[0] is False:
         return jsonify({
