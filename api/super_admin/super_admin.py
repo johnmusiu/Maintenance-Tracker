@@ -3,7 +3,7 @@
 from . import super_admin_bp
 from flask import jsonify, request
 from ..wrappers import token_required, role_required
-from ..auth.views import register_validation
+from ..auth.auth import register_validation
 from ..models import SuperAdmin
 
 @super_admin_bp.route('', methods=['POST'])
