@@ -190,11 +190,6 @@ class SuperAdmin(User):
     def __init__(self):
         User.__init__(self)
 
-    def create(self, fname, lname, email, password):
-        """ create admin account """
-        user = User(fname, lname, email, password, is_admin="1")
-        return user.signup() 
-
 class Request():
     """ the requests model """
 

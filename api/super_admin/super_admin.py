@@ -4,7 +4,7 @@ from . import super_admin_bp
 from flask import jsonify, request
 from ..wrappers import token_required, role_required
 from ..auth.auth import register_validation
-from ..models import SuperAdmin
+from ..models import SuperAdmin, User
 
 @super_admin_bp.route('', methods=['POST'])
 @token_required
@@ -23,7 +23,8 @@ def create_admin():
     if validation is not True:
         return validation
 
-    results = SuperAdmin().create(fname, lname, email, password)
+    new_admin = User(fname, lname, email, password, "1")
+    results = new_admin.signup()
 
     if results[0] is False:
         return jsonify({"message": results[1]}), 409
