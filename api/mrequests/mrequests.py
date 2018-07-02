@@ -52,12 +52,12 @@ def validate_input(title, description, category):
                 "message": "Please fill in the 'title' field."
             })
 
-        if not description:
+        elif not description:
             response = jsonify({
                 "message": "Please fill in the 'description' field."
             })
 
-        if not category:
+        elif not category:
             response = jsonify({
                 "message": "Please fill in the 'type' field."
             })

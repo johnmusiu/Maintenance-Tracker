@@ -116,6 +116,7 @@ def login():
         token = User().generate_token(email, user['is_admin'], user['id'])
         return jsonify({
             'message': 'Login success, welcome!',
+            'role': user['is_admin'],
             'access-token': token.decode(),
         }), 200
 
