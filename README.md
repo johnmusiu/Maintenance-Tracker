@@ -100,7 +100,19 @@ Note: You should have some basic working knowledge on the above
             Provide a database name on which the app will run
             Ensure database setup is successful.
 
+    Add the following to your `.env` file as a minimum:
+
+            export FLASK_APP="run.py"
+            export FLASK_CON="development"
+            export SECRET_KEY="my-super-secret-secret-key"
+            export APP_SETTINGS="development"
+            export DB_USER="postgres"
+
+    Set your environment variables:
+
     ```source .env```
+
+    Run database migrations (creates db tables)
 
     ```python migration.py```
 
@@ -120,7 +132,8 @@ Note: You should have some basic working knowledge on the above
 
 11. Test the endpoints on postman
 
-    For instance to signup you sent a request to `http://127.0.0.1:5000/api/v2/auth/register`
+    For instance to signup you sent a request to 
+    `http://127.0.0.1:5000/api/v2/auth/register`
 
     A sample registration json request is given below:
 
@@ -133,9 +146,15 @@ Note: You should have some basic working knowledge on the above
         "confirm_password": "WEeu00t"
     }  
     ```
-To test without setting up local environment send requests to `https://..` from postman.
+    To test without setting up local environment send requests from postman to:
 
-To test without postman visit the online documentation [here]()
+    `https://gentle-sands-32555.herokuapp.com` 
+
+    For example: to register you can send a request to:
+
+    `https://gentle-sands-32555.herokuapp.com/api/v2/auth/register`
+
+    To test without postman visit the online documentation [here](https://maintrak.docs.apiary.io/)
 
 ## Built With
 

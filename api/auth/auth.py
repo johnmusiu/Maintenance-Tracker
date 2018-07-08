@@ -22,7 +22,8 @@ def register():
         return validation
 
     # now save user to db
-    result = User().signup(fname, lname, email, password)
+    user = User(fname, lname, email, password)
+    result = user.signup()
 
     if result[0] is False:
         return jsonify({
@@ -115,6 +116,7 @@ def login():
         token = User().generate_token(email, user['is_admin'], user['id'])
         return jsonify({
             'message': 'Login success, welcome!',
+            'role': user['is_admin'],
             'access-token': token.decode(),
         }), 200
 
