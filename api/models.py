@@ -136,6 +136,7 @@ class Admin(User):
         result = {}
         for request in requests:
             result[request[0]] = {
+                "request_id": request[0],
                 "title": request[5],
                 "description": request[6],
                 "type": request[4],
@@ -243,6 +244,7 @@ class Request():
             result = {}
             for request in requests:
                 result[request[0]] = {
+                    "request_id": request[0],
                     "title": request[5],
                     "description": request[6],
                     "type": request[4],
