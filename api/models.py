@@ -129,13 +129,15 @@ class Admin(User):
 
     def get_all_requests(self):
         """ get request by id"""
-        sql = u"SELECT * FROM requests;"
+        sql = u"SELECT * FROM requests JOIN users on users.user_id = requests.user_id;"
         requests = fetch_all(sql)
         if not requests:
             return (False, "No requests exist!", 404)
         result = {}
+        
         for request in requests:
             result[request[0]] = {
+                "created_by": request[11] + " " + request[12],
                 "request_id": request[0],
                 "title": request[5],
                 "description": request[6],
