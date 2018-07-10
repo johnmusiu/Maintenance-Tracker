@@ -68,32 +68,29 @@ def register_validation(fname, lname, email, password, confirm_password):
         if not fname.isalpha():
             response = jsonify({
                 'message': "Please enter a valid first_name!",
-                'first_name': "A valid name has only letters and no spaces."
+                'error': "A valid name has only letters and no spaces."
             })
         if not lname.isalpha():
             response = jsonify({
                 'message': "Please enter a valid name!",
-                'last_name': "A valid name has only letters and no spaces."
+                'error': "A valid name has only letters and no spaces."
             })
 
         if not re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}", password):
             response = jsonify({
                 'message': 'Please enter a strong password to signup!',
-                'pasword': """Password must contain uppercase and lowercase letters,
+                'error': """Password must contain uppercase and lowercase letters,
                         digits and be have min-lenght of 6"""
             })
-        
+        # check if password matches confirm password
+        if password != confirm_password:
+            response = jsonify({
+                'message': 'Password and confirm password mismatch'
+            })
+
         if response is not True:
             response.status_code = 400
         return response
-    # check if password matches confirm password
-    if password != confirm_password:
-        response = jsonify({
-            'message': 'Password and confirm password mismatch'
-        })
-        response.status_code = 400
-    return response
-
 
 @auth.route('/login', methods=['POST'])
 def login():
