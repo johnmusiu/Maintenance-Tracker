@@ -46,7 +46,7 @@ pylint-plugin-utils==0.2.6
 pytest==3.6.0
 python-dotenv==0.8.2
 PyYAML==5.4
-requests==2.18.4
+requests==2.20.0
 requirements-detector==0.5.2
 setoptconf==0.2.0
 six==1.11.0
