@@ -51,6 +51,6 @@ requirements-detector==0.5.2
 setoptconf==0.2.0
 six==1.11.0
 snowballstemmer==1.2.1
-urllib3==1.22
+urllib3==1.26.5
 Werkzeug==0.14.1
 wrapt==1.10.11
